@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE">
@@ -24,13 +25,16 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/switch_to_login"
+                android:id="@+id/tv_log_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Log In"
-                android:textColor="#BDBDBD"
-                android:textSize="32sp"
+                android:textColor="#CCCCCC"
+                android:textSize="24sp"
                 android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
                 android:layout_marginEnd="20dp" />
 
             <TextView
@@ -51,7 +55,7 @@
         android:padding="40dp">
 
         <EditText
-            android:id="@+id/reg_email"
+            android:id="@+id/email_register"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="#FFFFFF"
@@ -60,7 +64,7 @@
             android:layout_marginBottom="15dp" />
 
         <EditText
-            android:id="@+id/reg_password"
+            android:id="@+id/password_register"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="#FFFFFF"

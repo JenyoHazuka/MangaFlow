@@ -16,10 +16,13 @@
         android:theme="@style/Theme.MangaFlow"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".activities.LogoutActivity"
             android:exported="false" />
         <activity
             android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MapsActivity"

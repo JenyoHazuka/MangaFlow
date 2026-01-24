@@ -2,9 +2,12 @@ package com.example.mangaflow.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -59,31 +62,53 @@ public class HomeActivity extends AppCompatActivity {
         ImageView btnCollection = findViewById(R.id.btn_collection);
         ImageView btnSearch = findViewById(R.id.btn_search);
         ImageView btnMaps = findViewById(R.id.btn_maps);
+        ImageView btnAccount = findViewById(R.id.btn_account);
 
         // Configuration des clics
 
+        // Vérification de la connexion
+        btnAccount.setOnClickListener(v -> {
+            SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+            String userEmail = pref.getString("user_email", null);
+
+            if (userEmail != null) {
+                // L'utilisateur est connecté -> Page de déconnexion
+                // Tu peux créer une nouvelle activité "LogoutActivity"
+                Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
+                startActivity(intent);
+            } else {
+                // L'utilisateur est déconnecté -> Page de Login
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Vers le Planning
         btnPlanning.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, PlanningActivity.class);
-            startActivity(intent);
+            Intent PlanningIntent = new Intent(HomeActivity.this, PlanningActivity.class);
+            startActivity(PlanningIntent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
         // Vers la Collection
         btnCollection.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CollectionActivity.class);
-            startActivity(intent);
+            Intent CollectionIntent = new Intent(HomeActivity.this, CollectionActivity.class);
+            startActivity(CollectionIntent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
         // Vers la Recherche
         btnSearch.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
-            startActivity(intent);
+            Intent SearchIntent = new Intent(HomeActivity.this, SearchActivity.class);
+            startActivity(SearchIntent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
         // Vers la Carte
         btnMaps.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, MapsActivity.class);
-            startActivity(intent);
+            Intent MapsIntent = new Intent(HomeActivity.this, MapsActivity.class);
+            startActivity(MapsIntent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
     }
 
