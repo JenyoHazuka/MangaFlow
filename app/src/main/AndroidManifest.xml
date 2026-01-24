@@ -16,19 +16,25 @@
         android:theme="@style/Theme.MangaFlow"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MapsActivity"
+            android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".PlanningActivity"
+            android:name=".activities.MapsActivity"
             android:exported="false" />
         <activity
-            android:name=".CollectionActivity"
+            android:name=".activities.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activities.PlanningActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CollectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
