@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
             mangaList = loadMangasFromJSON();
 
             // 2. Créer l'adapter AVEC la liste remplie
-            adapter = new MangaAdapter(mangaList);
+            adapter = new MangaAdapter(mangaList, R.layout.manga_item);
 
             // 3. Lier l'adapter au RecyclerView
             recyclerView.setAdapter(adapter);
@@ -134,20 +134,20 @@ public class HomeActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                // On crée l'objet MangaClass avec les clés exactes de ton JSON
+                // Extraction sécurisée
+                String titre = obj.optString("titre_serie", "Inconnu");
+                int tome = obj.optInt("numero_tome", 0); // optInt gère String ou Int automatiquement
+                String img = obj.optString("image_url", "");
+                String edit = obj.optString("edition", "");
+                String isbn = obj.optString("ean", "0000000000000"); // Ton JSON semble utiliser "ean" au lieu de "isbn"
+                String editeur = obj.optString("editeur_fr", "");
+                String date = obj.optString("date_parution", "");
+                String resume = obj.optString("resume", "");
+
+                // On crée l'objet avec les données récupérées
                 list.add(new MangaClass(
-                        obj.getString("titre_serie"),
-                        numTome = Integer.parseInt(obj.getString("numero_tome")),
-                        obj.getString("image_url"),
-                        obj.getString("edition"),
-                        obj.getInt("ean"),
-                        obj.getString("editeur_fr"),
-                        obj.getString("date_parution"),
-                        0.0f, // Prix
-                        0,    // Pages
-                        null, // Liste auteurs
-                        null, // Liste genres
-                        obj.getString("resume")
+                        titre, tome, img, edit, isbn, editeur, date,
+                        0.0f, 0, null, null, resume
                 ));
             }
         } catch (Exception e) {

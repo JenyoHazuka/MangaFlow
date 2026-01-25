@@ -7,7 +7,7 @@ public class MangaClass {
     private Integer numero_tome;
     private String image_url;
     private String edition;
-    private Integer isbn;
+    private String isbn;
     private String editeur;
     private String date_parution;
     private Float prix;
@@ -17,7 +17,7 @@ public class MangaClass {
     private String resume;
 
     // Constructeur
-    public MangaClass(String titre_serie, Integer numero_tome, String image_url, String edition, Integer isbn,
+    public MangaClass(String titre_serie, Integer numero_tome, String image_url, String edition, String isbn,
                       String editeur, String date_parution, Float prix, Integer nb_pages, List<String> auteurs,
                       List<String> genres_theme, String resume) {
         this.titre_serie = titre_serie;
@@ -50,7 +50,7 @@ public class MangaClass {
         return edition;
     }
 
-    public Integer getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 

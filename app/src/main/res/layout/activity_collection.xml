@@ -1,10 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.CollectionActivity">
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/header_search_bar" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E0E0E0"
+        android:padding="8dp"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_collection"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:text="Collection"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:background="@android:drawable/btn_default"
+                android:backgroundTint="#CCCCCC" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_completer"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:text="Compléter"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:background="@android:drawable/btn_default"
+                android:backgroundTint="#CCCCCC" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_souhaiter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:text="Souhaiter"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:background="@android:drawable/btn_default"
+                android:backgroundTint="#CCCCCC" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_a_lire"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_margin="4dp"
+                android:text="A Lire"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:background="@android:drawable/btn_default"
+                android:backgroundTint="#CCCCCC" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/bottom_nav_manga"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="#007FFF"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/btn_home"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_home_light" />
+
+        <ImageView
+            android:id="@+id/btn_collection"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_collection_light" />
+
+        <ImageView
+            android:id="@+id/btn_planning"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_calendar_light" />
+
+        <ImageView
+            android:id="@+id/btn_search"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_search_light" />
+
+        <ImageView
+            android:id="@+id/btn_maps"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_maps_light" />
+    </LinearLayout>
+
+</LinearLayout>

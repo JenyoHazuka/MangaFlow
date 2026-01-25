@@ -1,0 +1,214 @@
+[
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets.html",
+    "titre": "The Quintessential Quintuplets",
+    "image_url": "https://www.nautiljon.com/images/manga/00/92/mini/the_quintessential_quintuplets_6929.webp?11703282286",
+    "type": "Shonen",
+    "genres_themes": [
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "auteurs": [
+      {
+        "nom": "Haruba Negi",
+        "role": "Auteur"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "14 tomes",
+        "statut": "terminé"
+      },
+      {
+        "nom_edition": "Édition couleur",
+        "nb_tomes": "14 tomes",
+        "statut": "terminé"
+      },
+      {
+        "nom_edition": "Édition US",
+        "nb_tomes": "14 tomes",
+        "statut": "terminé"
+      }
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/frieren.html",
+    "titre": "Frieren",
+    "image_url": "https://www.nautiljon.com/images/manga/00/31/mini/frieren_15713.webp?11768609556",
+    "type": "Shonen",
+    "genres_themes": [
+      "Amitié",
+      "Combats",
+      "Contes et légendes",
+      "Démons",
+      "Elfe",
+      "Magie",
+      "Médiéval",
+      "Nostalgie",
+      "Quotidien",
+      "Voyage"
+    ],
+    "auteurs": [
+      {
+        "nom": "Yamada Kanehito",
+        "role": "Scénariste"
+      },
+      {
+        "nom": "Abe Tsukasa",
+        "role": "Dessinateur"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "14 tomes",
+        "statut": "en cours"
+      },
+      {
+        "nom_edition": "Édition US",
+        "nb_tomes": "10 tomes",
+        "statut": "en cours"
+      }
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/act-age.html",
+    "titre": "Act-age",
+    "image_url": "https://www.nautiljon.com/images/manga/00/52/mini/act-age_9025.webp?11717522379",
+    "type": "Shonen",
+    "genres_themes": [
+      "Comédie",
+      "Drame",
+      "Slice of Life"
+    ],
+    "auteurs": [
+      {
+        "nom": "Matsuki Tatsuya",
+        "role": "Scénariste"
+      },
+      {
+        "nom": "Usazaki Shiro",
+        "role": "Dessinateur"
+      }
+    ],
+    "editions": "N/A"
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/spy×family.html",
+    "titre": "SPY×FAMILY",
+    "image_url": "https://www.nautiljon.com/images/manga/00/56/mini/spy_family_10465.webp?11730725278",
+    "type": "Shonen",
+    "genres_themes": [
+      "Assassinat",
+      "Espionnage",
+      "Famille",
+      "Guerre",
+      "Mensonges",
+      "Organisations secrètes",
+      "Politique",
+      "Super pouvoirs",
+      "Terrorisme"
+    ],
+    "auteurs": [
+      {
+        "nom": "Endo Tatsuya",
+        "role": "Auteur"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "15 tomes",
+        "statut": "en cours"
+      },
+      {
+        "nom_edition": "Édition US",
+        "nb_tomes": "15 tomes",
+        "statut": "en cours"
+      }
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/black★rock+shooter+-+innocent+soul.html",
+    "titre": "Black★Rock Shooter - Innocent Soul",
+    "image_url": "https://www.nautiljon.com/images/manga/00/66/mini/black_rock_shooter_-_innocent_soul_1566.webp?11641147206",
+    "type": "Seinen",
+    "genres_themes": [
+      "Action",
+      "Drame",
+      "Fantastique",
+      "School Life",
+      "Slice of Life",
+      "Surnaturel"
+    ],
+    "auteurs": [
+      {
+        "nom": "Huke",
+        "role": "Scénariste"
+      },
+      {
+        "nom": "Suzuki Sanami",
+        "role": "Dessinateur"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "3 tomes",
+        "statut": "terminé"
+      },
+      {
+        "nom_edition": "Édition Intégrale",
+        "nb_tomes": "1 tome",
+        "statut": "terminé"
+      }
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/nana.html",
+    "titre": "Nana",
+    "image_url": "https://www.nautiljon.com/images/manga/00/73/mini/nana_37.webp?11738928817",
+    "type": "Shojo",
+    "genres_themes": [
+      "Adultère",
+      "Amour",
+      "Colocation",
+      "Mensonges",
+      "Musique",
+      "Quotidien",
+      "Secrets",
+      "Sexe",
+      "Triangle amoureux"
+    ],
+    "auteurs": [
+      {
+        "nom": "Yazawa Ai",
+        "role": "Auteur"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "21 tomes",
+        "statut": "en attente"
+      },
+      {
+        "nom_edition": "Réédition 2025",
+        "nb_tomes": "À paraître",
+        "statut": "N/A"
+      },
+      {
+        "nom_edition": "Édition Double US",
+        "nb_tomes": "2 tomes",
+        "statut": "en cours"
+      },
+      {
+        "nom_edition": "Édition US",
+        "nb_tomes": "21 tomes",
+        "statut": "en attente"
+      }
+    ]
+  }
+]

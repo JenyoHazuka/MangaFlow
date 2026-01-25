@@ -16,6 +16,12 @@
         android:theme="@style/Theme.MangaFlow"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.SerieActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MangaActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.LogoutActivity"
             android:exported="false" />
         <activity
