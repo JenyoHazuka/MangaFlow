@@ -2,10 +2,8 @@ package com.example.mangaflow.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangaflow.R;
@@ -18,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SerieActivity extends AppCompatActivity {
+public class SerieActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private List<MangaClass> tomesDeLEdition = new ArrayList<>();

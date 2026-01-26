@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,7 +24,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class CollectionActivity extends AppCompatActivity {
+public class CollectionActivity extends BaseActivity {
 
     private Button btnColl, btnComp, btnSouh, btnLire;
     private JSONArray userCollection;

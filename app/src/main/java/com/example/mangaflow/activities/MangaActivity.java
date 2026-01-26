@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.mangaflow.R;
@@ -26,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MangaActivity extends AppCompatActivity {
+public class MangaActivity extends BaseActivity {
 
     private MangaClass currentManga;
     private Button btnAjouter, btnSuivre, btnALire;

@@ -5,9 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.mangaflow.R;
 import com.example.mangaflow.fragments.PlanningToutFragment;
@@ -15,7 +13,7 @@ import com.example.mangaflow.fragments.PlanningNouveautesFragment;
 import org.json.JSONArray;
 import java.io.InputStream;
 
-public class PlanningActivity extends AppCompatActivity {
+public class PlanningActivity extends BaseActivity {
 
     private Button btnTout, btnNouveautes;
     private int colorActive = Color.parseColor("#0083ff");
