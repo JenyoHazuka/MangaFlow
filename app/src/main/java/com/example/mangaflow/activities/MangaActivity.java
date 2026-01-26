@@ -83,30 +83,54 @@ public class MangaActivity extends AppCompatActivity {
 
             JSONArray collection = userData.getJSONArray("collection");
             JSONObject serie = findOrCreateSerie(collection, currentManga.getTitre_serie());
-            JSONObject tome = findOrCreateTome(serie.getJSONArray("mangas"), currentManga.getNumero_tome());
+            JSONArray mangasDeLaSerie = serie.getJSONArray("mangas");
+            JSONObject tomeActuel = findOrCreateTome(mangasDeLaSerie, currentManga.getNumero_tome());
 
             switch (actionType) {
                 case "ADD":
-                    boolean isPossede = !tome.optBoolean("posséder", false);
-                    tome.put("posséder", isPossede);
-                    tome.put("souhaiter", isPossede); // Suivre auto si ajouté
-                    if (!isPossede) { tome.put("lu", false); tome.put("souhaiter", false); }
+                    boolean isPossede = !tomeActuel.optBoolean("posséder", false);
+                    tomeActuel.put("posséder", isPossede);
+
+                    if (isPossede) {
+                        // 1. On active le suivi sur le tome cliqué
+                        tomeActuel.put("souhaiter", true);
+
+                        // 2. LOGIQUE GLOBALE : On s'assure que TOUS les tomes de la série sont créés et suivis
+                        // On récupère le nombre total de tomes depuis l'objet série (que findOrCreateSerie a rempli)
+                        int totalTomes = serie.optInt("nombre_tome_total", 0);
+
+                        for (int n = 1; n <= totalTomes; n++) {
+                            // Cette méthode va soit trouver le tome existant, soit le créer
+                            JSONObject t = findOrCreateTome(mangasDeLaSerie, n);
+                            t.put("souhaiter", true);
+                        }
+                        Log.d("MangaFlow", "Suivi activé pour l'intégralité des " + totalTomes + " tomes de " + currentManga.getTitre_serie());
+                    }
                     break;
+
                 case "FOLLOW":
-                    tome.put("souhaiter", !tome.optBoolean("souhaiter", false));
+                    tomeActuel.put("souhaiter", !tomeActuel.optBoolean("souhaiter", false));
                     break;
+
                 case "READ":
-                    tome.put("lu", !tome.optBoolean("lu", false));
+                    tomeActuel.put("lu", !tomeActuel.optBoolean("lu", false));
                     break;
             }
 
             saveStringToFile(file, userData.toString());
-            updateButtonsUI(tome); // Rafraîchissement immédiat de l'affichage
+            updateButtonsUI(tomeActuel); // Rafraîchit le bouton de la page actuelle
 
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Re-vérifie le fichier JSON utilisateur pour mettre à jour les boutons
+        checkAndRefreshUserStatus();
     }
 
     private void updateButtonsUI(JSONObject tome) {
@@ -150,26 +174,37 @@ public class MangaActivity extends AppCompatActivity {
             JSONArray collection = userData.optJSONArray("collection");
             if (collection == null) return;
 
+            // ÉTAPE MANQUANTE : Trouver la bonne série dans la collection
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
+
+                // On vérifie si c'est la série du manga actuel
                 if (serie.getString("nom").equalsIgnoreCase(currentManga.getTitre_serie())) {
+
+                    // On récupère le tableau des mangas pour CETTE série
                     JSONArray mangas = serie.getJSONArray("mangas");
+
+                    // Maintenant on peut faire la boucle sur les tomes
                     for (int j = 0; j < mangas.length(); j++) {
                         JSONObject tome = mangas.getJSONObject(j);
 
-                        // Comparaison robuste String vs String
-                        String numJson = String.valueOf(tome.opt("numéro"));
-                        String numCible = String.valueOf(currentManga.getNumero_tome());
+                        int numInJson = tome.optInt("numéro", -1);
+                        int numCible = currentManga.getNumero_tome();
 
-                        if (numJson.equals(numCible)) {
-                            updateButtonsUI(tome);
+                        if (numInJson == numCible) {
+                            updateButtonsUI(tome); // Met à jour les couleurs
                             return;
                         }
                     }
                 }
             }
+
+            // Si on arrive ici, c'est que le tome n'est pas encore dans le JSON
             resetButtonsToDefault();
-        } catch (Exception e) { e.printStackTrace(); }
+
+        } catch (Exception e) {
+            Log.e("MangaFlow", "Erreur refresh status", e);
+        }
     }
 
     private void resetButtonsToDefault() {
@@ -218,11 +253,22 @@ public class MangaActivity extends AppCompatActivity {
         for (int i = 0; i < mangas.length(); i++) {
             if (mangas.getJSONObject(i).optInt("numéro") == numero) return mangas.getJSONObject(i);
         }
+
+        // Vérifier si au moins un autre tome de cette série est déjà suivi
+        boolean serieDejaSuivie = false;
+        for (int i = 0; i < mangas.length(); i++) {
+            if (mangas.getJSONObject(i).optBoolean("souhaiter", false)) {
+                serieDejaSuivie = true;
+                break;
+            }
+        }
+
         JSONObject newTome = new JSONObject();
         newTome.put("numéro", numero);
         newTome.put("jaquette", currentManga.getImage_url());
         newTome.put("lu", false);
-        newTome.put("souhaiter", false);
+        // Si la série est déjà suivie, le nouveau tome l'est aussi automatiquement
+        newTome.put("souhaiter", serieDejaSuivie);
         newTome.put("posséder", false);
         mangas.put(newTome);
         return newTome;

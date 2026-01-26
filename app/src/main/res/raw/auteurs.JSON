@@ -309,5 +309,96 @@
       "Love Letter (Yazawa Ai)",
       "Ballad made Soba ni Ite"
     ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/people/kinojo+miya.html",
+    "nom": "Kinojo Miya",
+    "nationalite": "Japonaise",
+    "sexe": "",
+    "date_naissance": "N/A",
+    "statut": "Actif",
+    "mangas_details": [
+      {
+        "titre": "Isekai Street Food",
+        "role": "Scénariste"
+      },
+      {
+        "titre": "Chillin' Life in a Different World",
+        "role": "Scénariste"
+      }
+    ],
+    "light_novels_details": [
+      {
+        "titre": "Lv2 kara Cheat datta Moto Yuusha Kouho no Mattari Isekai Life",
+        "role": "Scénariste"
+      }
+    ],
+    "oeuvres_jointure": [
+      "Chillin' Life in a Different World",
+      "Isekai Street Food",
+      "Lv2 kara Cheat datta Moto Yuusha Kouho no Mattari Isekai Life"
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/people/katagiri+(illustrateur).html",
+    "nom": "Katagiri (illustrateur)",
+    "nationalite": "Japonaise",
+    "sexe": "",
+    "date_naissance": "N/A",
+    "statut": "Actif",
+    "mangas_details": [
+      {
+        "titre": "Dagekikei Onikko ga Iku Haishindou! @COMIC",
+        "role": "Chara-designer"
+      },
+      {
+        "titre": "Chillin' Life in a Different World",
+        "role": "Chara-designer"
+      }
+    ],
+    "light_novels_details": [
+      {
+        "titre": "Isekai de Tame Shita Saikyou no Tsukai Ma wa, Osananajimi no Bishoujo deshita",
+        "role": "Illustrateur"
+      },
+      {
+        "titre": "Dagekikei Onikko ga Iku Haishindou!",
+        "role": "Illustrateur"
+      },
+      {
+        "titre": "Tokyo Maou - Monster ga Afureru Sekai ni Narime Sameta Nouryoku [Monster Master] wo Tsukai Saikyou no Monster Gundan wo Ikusei Shitara Maou to Yobare Jinrui no Teki ni Saretan daga",
+        "role": "Illustrateur"
+      },
+      {
+        "titre": "Lv2 kara Cheat datta Moto Yuusha Kouho no Mattari Isekai Life",
+        "role": "Illustrateur"
+      }
+    ],
+    "oeuvres_jointure": [
+      "Chillin' Life in a Different World",
+      "Isekai de Tame Shita Saikyou no Tsukai Ma wa, Osananajimi no Bishoujo deshita",
+      "Tokyo Maou - Monster ga Afureru Sekai ni Narime Sameta Nouryoku [Monster Master] wo Tsukai Saikyou no Monster Gundan wo Ikusei Shitara Maou to Yobare Jinrui no Teki ni Saretan daga",
+      "Dagekikei Onikko ga Iku Haishindou!",
+      "Lv2 kara Cheat datta Moto Yuusha Kouho no Mattari Isekai Life",
+      "Dagekikei Onikko ga Iku Haishindou! @COMIC"
+    ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/people/itomachi+akine.html",
+    "nom": "Itomachi Akine",
+    "nationalite": "Japonaise",
+    "sexe": "",
+    "date_naissance": "N/A",
+    "statut": "Actif",
+    "mangas_details": [
+      {
+        "titre": "Chillin' Life in a Different World",
+        "role": "Dessinateur"
+      }
+    ],
+    "light_novels_details": [],
+    "oeuvres_jointure": [
+      "Chillin' Life in a Different World"
+    ]
   }
 ]

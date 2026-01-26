@@ -153,5 +153,39 @@
         "statut": "en attente"
       }
     ]
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/chillin-+life+in+a+different+world.html",
+    "titre": "Chillin' Life in a Different World",
+    "image_url": "https://www.nautiljon.com/images/manga/00/58/mini/chillin_life_in_a_different_world_13085.webp?11757530811",
+    "type": "Shonen",
+    "genres_themes": [
+      "Amour",
+      "Autre monde",
+      "Harem",
+      "Magie",
+      "Quotidien"
+    ],
+    "auteurs": [
+      {
+        "nom": "Kinojo Miya",
+        "role": "Scénariste"
+      },
+      {
+        "nom": "Itomachi Akine",
+        "role": "Dessinateur"
+      },
+      {
+        "nom": "Katagiri",
+        "role": "Chara-designer"
+      }
+    ],
+    "editions": [
+      {
+        "nom_edition": "Édition par défaut",
+        "nb_tomes": "11",
+        "statut": "en cours"
+      }
+    ]
   }
 ]
