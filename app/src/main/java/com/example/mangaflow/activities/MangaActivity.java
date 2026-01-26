@@ -1,8 +1,12 @@
 package com.example.mangaflow.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,24 +17,36 @@ import com.example.mangaflow.R;
 import com.example.mangaflow.utils.MangaClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MangaActivity extends AppCompatActivity {
 
-    // Variable globale pour stocker le manga chargé
     private MangaClass currentManga;
+    private Button btnAjouter, btnSuivre, btnALire;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manga);
 
+        // 1. Initialisation des boutons
+        btnAjouter = findViewById(R.id.btn_add);
+        btnSuivre = findViewById(R.id.btn_follow);
+        btnALire = findViewById(R.id.btn_read);
+
+        // 2. Récupération des extras (Titre ET Numéro)
         String targetTitle = getIntent().getStringExtra("TITRE_MANGA");
+        int targetNumber = getIntent().getIntExtra("NUMERO_TOME", 1);
 
         if (targetTitle != null) {
-            loadMangaFromJSON(targetTitle);
+            loadMangaFromJSON(targetTitle, targetNumber);
         } else {
             Toast.makeText(this, "Erreur : aucun manga spécifié", Toast.LENGTH_SHORT).show();
             finish();
@@ -38,40 +54,206 @@ public class MangaActivity extends AppCompatActivity {
 
         // --- NAVIGATION ---
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_home).setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
-        });
+        findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+        findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
+        findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
+        findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
+        setupSerieLinks();
 
-        findViewById(R.id.btn_collection).setOnClickListener(v -> {
-            startActivity(new Intent(this, CollectionActivity.class));
-        });
-
-        findViewById(R.id.btn_planning).setOnClickListener(v -> {
-            startActivity(new Intent(this, PlanningActivity.class));
-        });
-
-        findViewById(R.id.btn_search).setOnClickListener(v -> {
-            startActivity(new Intent(this, SearchActivity.class));
-        });
-
-        findViewById(R.id.btn_maps).setOnClickListener(v -> {
-            startActivity(new Intent(this, MapsActivity.class));
-        });
-
+        // --- LISTENERS ACTIONS ---
+        btnAjouter.setOnClickListener(v -> handleAction("ADD"));
+        btnSuivre.setOnClickListener(v -> handleAction("FOLLOW"));
+        btnALire.setOnClickListener(v -> handleAction("READ"));
     }
 
-    private void loadMangaFromJSON(String titleToFind) {
+    private void handleAction(String actionType) {
+        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String email = pref.getString("user_email", null);
+
+        if (email == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
+
+        try {
+            File file = new File(getFilesDir(), email + "_data.json");
+            JSONObject userData = file.exists() ? new JSONObject(loadStringFromFile(file)) : new JSONObject();
+            if (!userData.has("collection")) userData.put("collection", new JSONArray());
+
+            JSONArray collection = userData.getJSONArray("collection");
+            JSONObject serie = findOrCreateSerie(collection, currentManga.getTitre_serie());
+            JSONObject tome = findOrCreateTome(serie.getJSONArray("mangas"), currentManga.getNumero_tome());
+
+            switch (actionType) {
+                case "ADD":
+                    boolean isPossede = !tome.optBoolean("posséder", false);
+                    tome.put("posséder", isPossede);
+                    tome.put("souhaiter", isPossede); // Suivre auto si ajouté
+                    if (!isPossede) { tome.put("lu", false); tome.put("souhaiter", false); }
+                    break;
+                case "FOLLOW":
+                    tome.put("souhaiter", !tome.optBoolean("souhaiter", false));
+                    break;
+                case "READ":
+                    tome.put("lu", !tome.optBoolean("lu", false));
+                    break;
+            }
+
+            saveStringToFile(file, userData.toString());
+            updateButtonsUI(tome); // Rafraîchissement immédiat de l'affichage
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateButtonsUI(JSONObject tome) {
+        // runOnUiThread garantit que l'affichage change bien sur l'écran
+        runOnUiThread(() -> {
+            try {
+                // AJOUTER / RETIRER
+                boolean possede = tome.optBoolean("posséder", false);
+                btnAjouter.setBackgroundTintList(ColorStateList.valueOf(possede ? Color.parseColor("#0083ff") : Color.WHITE));
+                btnAjouter.setTextColor(possede ? Color.WHITE : Color.BLACK);
+                btnAjouter.setText(possede ? "Retirer" : "Ajouter");
+
+                // SUIVRE / SUIVI
+                boolean souhaite = tome.optBoolean("souhaiter", false);
+                btnSuivre.setBackgroundTintList(ColorStateList.valueOf(souhaite ? Color.parseColor("#C00F0C") : Color.WHITE));
+                btnSuivre.setTextColor(souhaite ? Color.WHITE : Color.BLACK);
+                btnSuivre.setText(souhaite ? "Suivi" : "Suivre");
+
+                // LU / A LIRE
+                boolean lu = tome.optBoolean("lu", false);
+                btnALire.setBackgroundTintList(ColorStateList.valueOf(lu ? Color.parseColor("#009951") : Color.WHITE));
+                btnALire.setTextColor(lu ? Color.WHITE : Color.BLACK);
+                btnALire.setText(lu ? "Lu" : "A Lire");
+
+            } catch (Exception e) {
+                Log.e("MangaFlow", "Erreur rafraîchissement visuel boutons", e);
+            }
+        });
+    }
+
+    private void checkAndRefreshUserStatus() {
+        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String email = pref.getString("user_email", null);
+        if (email == null || currentManga == null) return;
+
+        try {
+            File file = new File(getFilesDir(), email + "_data.json");
+            if (!file.exists()) { resetButtonsToDefault(); return; }
+
+            JSONObject userData = new JSONObject(loadStringFromFile(file));
+            JSONArray collection = userData.optJSONArray("collection");
+            if (collection == null) return;
+
+            for (int i = 0; i < collection.length(); i++) {
+                JSONObject serie = collection.getJSONObject(i);
+                if (serie.getString("nom").equalsIgnoreCase(currentManga.getTitre_serie())) {
+                    JSONArray mangas = serie.getJSONArray("mangas");
+                    for (int j = 0; j < mangas.length(); j++) {
+                        JSONObject tome = mangas.getJSONObject(j);
+
+                        // Comparaison robuste String vs String
+                        String numJson = String.valueOf(tome.opt("numéro"));
+                        String numCible = String.valueOf(currentManga.getNumero_tome());
+
+                        if (numJson.equals(numCible)) {
+                            updateButtonsUI(tome);
+                            return;
+                        }
+                    }
+                }
+            }
+            resetButtonsToDefault();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    private void resetButtonsToDefault() {
+        runOnUiThread(() -> {
+            btnAjouter.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            btnAjouter.setTextColor(Color.BLACK);
+            btnAjouter.setText("Ajouter");
+            btnSuivre.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            btnSuivre.setTextColor(Color.BLACK);
+            btnSuivre.setText("Suivre");
+            btnALire.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            btnALire.setTextColor(Color.BLACK);
+            btnALire.setText("A Lire");
+        });
+    }
+
+    // --- UTILS JSON ---
+
+    private JSONObject findOrCreateSerie(JSONArray collection, String nom) throws Exception {
+        for (int i = 0; i < collection.length(); i++) {
+            if (collection.getJSONObject(i).getString("nom").equalsIgnoreCase(nom)) return collection.getJSONObject(i);
+        }
+        int totalTomes = 0;
+        try {
+            InputStream is = getResources().openRawResource(R.raw.series);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            JSONArray allSeries = new JSONArray(new String(buffer, "UTF-8"));
+            for (int i = 0; i < allSeries.length(); i++) {
+                if (allSeries.getJSONObject(i).getString("nom").equalsIgnoreCase(nom)) {
+                    totalTomes = allSeries.getJSONObject(i).getInt("nombre_tome_total");
+                    break;
+                }
+            }
+        } catch (Exception e) { Log.e("MangaFlow", "Erreur lecture series.json"); }
+
+        JSONObject newSerie = new JSONObject();
+        newSerie.put("nom", nom);
+        newSerie.put("nombre_tome_total", totalTomes);
+        newSerie.put("mangas", new JSONArray());
+        collection.put(newSerie);
+        return newSerie;
+    }
+
+    private JSONObject findOrCreateTome(JSONArray mangas, int numero) throws Exception {
+        for (int i = 0; i < mangas.length(); i++) {
+            if (mangas.getJSONObject(i).optInt("numéro") == numero) return mangas.getJSONObject(i);
+        }
+        JSONObject newTome = new JSONObject();
+        newTome.put("numéro", numero);
+        newTome.put("jaquette", currentManga.getImage_url());
+        newTome.put("lu", false);
+        newTome.put("souhaiter", false);
+        newTome.put("posséder", false);
+        mangas.put(newTome);
+        return newTome;
+    }
+
+    private String loadStringFromFile(File file) throws Exception {
+        FileInputStream fis = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        fis.read(data); fis.close();
+        return new String(data, StandardCharsets.UTF_8);
+    }
+
+    private void saveStringToFile(File file, String content) throws Exception {
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(content.getBytes(StandardCharsets.UTF_8));
+        fos.close();
+    }
+
+    private void loadMangaFromJSON(String titleToFind, int numberToFind) {
         try {
             InputStream is = getResources().openRawResource(R.raw.mangas);
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
-            String json = new String(buffer, "UTF-8");
-            JSONArray jsonArray = new JSONArray(json);
+            JSONArray jsonArray = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                if (obj.optString("titre_serie").equalsIgnoreCase(titleToFind)) {
+                // FILTRE SUR LE TITRE ET LE NUMÉRO DE TOME
+                if (obj.optString("titre_serie").equalsIgnoreCase(titleToFind) &&
+                        obj.optInt("numero_tome") == numberToFind) {
 
                     List<String> auteurs = new ArrayList<>();
                     JSONArray auteursJ = obj.optJSONArray("auteurs");
@@ -79,22 +261,13 @@ public class MangaActivity extends AppCompatActivity {
                         for(int j=0; j<auteursJ.length(); j++) auteurs.add(auteursJ.getString(j));
                     }
 
-                    List<String> genres = new ArrayList<>();
-                    JSONArray genresJ = obj.optJSONArray("genres_theme");
-                    if (genresJ != null) {
-                        for(int j=0; j<genresJ.length(); j++) genres.add(genresJ.getString(j));
-                    }
-
-                    // Traitement du prix
+                    // Traitement du prix (Nettoyage de la chaîne "€" et ",")
                     String prixRaw = obj.optString("prix", "0.0");
                     float prixClean = 0.0f;
                     try {
                         prixClean = Float.parseFloat(prixRaw.replace("€", "").replace(",", ".").trim());
-                    } catch (NumberFormatException e) {
-                        Log.e("MangaFlow", "Erreur format prix: " + prixRaw);
-                    }
+                    } catch (Exception e) { Log.e("MangaFlow", "Erreur prix"); }
 
-                    // On assigne à la variable globale currentManga
                     currentManga = new MangaClass(
                             obj.optString("titre_serie"),
                             obj.optInt("numero_tome"),
@@ -106,63 +279,48 @@ public class MangaActivity extends AppCompatActivity {
                             prixClean,
                             obj.optInt("nb_pages", 0),
                             auteurs,
-                            genres,
-                            obj.optString("resume")
+                            new ArrayList<>(),
+                            obj.optString("resume"),
+                            false, false, false
                     );
 
                     updateUI(currentManga);
-                    setupSerieLinks(); // Active les clics vers la page Série
+                    checkAndRefreshUserStatus();
                     return;
                 }
             }
         } catch (Exception e) {
-            Log.e("MangaFlow", "Erreur détaillée : " + e.getMessage());
-            Toast.makeText(this, "Erreur lecture JSON", Toast.LENGTH_SHORT).show();
+            Log.e("MangaFlow", "Erreur JSON", e);
         }
     }
 
     private void setupSerieLinks() {
-        if (currentManga == null) return;
-
-        // On active le clic uniquement sur la section Série
         findViewById(R.id.tv_serie_name).setOnClickListener(v -> {
             if (currentManga != null) {
-                Intent SerieIntent = new Intent(MangaActivity.this, SerieActivity.class);
-                SerieIntent.putExtra("SERIE_NAME", currentManga.getTitre_serie());
-                SerieIntent.putExtra("EDITEUR_NAME", currentManga.getEditeur());
-                startActivity(SerieIntent);
+                Intent intent = new Intent(this, SerieActivity.class);
+                intent.putExtra("SERIE_NAME", currentManga.getTitre_serie());
+                intent.putExtra("NUMERO_TOME", currentManga.getNumero_tome());
+                intent.putExtra("EDITEUR_NAME", currentManga.getEditeur());
+                startActivity(intent);
             }
         });
-
-        // L'éditeur reste statique pour l'instant
     }
 
     private void updateUI(MangaClass manga) {
         ((TextView) findViewById(R.id.tv_header_title)).setText(manga.getTitre_serie());
         ((TextView) findViewById(R.id.tv_info_title)).setText(manga.getTitre_serie());
         ((TextView) findViewById(R.id.tv_info_tome)).setText("Tome " + manga.getNumero_tome());
-
         ((TextView) findViewById(R.id.tv_serie_name)).setText(manga.getTitre_serie());
         ((TextView) findViewById(R.id.tv_edition_name)).setText(manga.getEdition() + " - " + manga.getEditeur());
-
         ((TextView) findViewById(R.id.tv_manga_summary)).setText(manga.getResume());
 
-        // Prix et Barcode corrigés
-        ((TextView) findViewById(R.id.tv_price)).setText(String.format("€  %.2f€", manga.getPrix()));
-        ((TextView) findViewById(R.id.tv_date)).setText("📅  " + manga.getDate_parution());
-        ((TextView) findViewById(R.id.tv_isbn)).setText("Barcode  " + manga.getIsbn());
-        ((TextView) findViewById(R.id.tv_nb_pages)).setText("Nombre de pages : " + manga.getNb_pages());
+        // FIX PRIX ET PAGES
+        ((TextView) findViewById(R.id.tv_price)).setText(String.format("%.2f€", manga.getPrix()));
+        ((TextView) findViewById(R.id.tv_nb_pages)).setText("Nombre de pages : " + (manga.getNb_pages() > 0 ? manga.getNb_pages() : "Inconnu"));
+        ((TextView) findViewById(R.id.tv_date)).setText(manga.getDate_parution());
+        ((TextView) findViewById(R.id.tv_isbn)).setText(manga.getIsbn());
 
         ImageView cover = findViewById(R.id.iv_manga_cover);
-        Glide.with(this)
-                .load(manga.getImage_url())
-                .placeholder(R.drawable.placeholder_cover)
-                .error(R.drawable.placeholder_cover)
-                .centerCrop()
-                .into(cover);
-
-        findViewById(R.id.btn_read).setOnClickListener(v -> {
-            Toast.makeText(this, "Ouverture de " + manga.getTitre_serie(), Toast.LENGTH_SHORT).show();
-        });
+        Glide.with(this).load(manga.getImage_url()).centerCrop().into(cover);
     }
 }

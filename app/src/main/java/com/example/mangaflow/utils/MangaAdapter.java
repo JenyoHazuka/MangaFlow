@@ -57,8 +57,12 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
         // CLIC SUR L'ITEM
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MangaActivity.class);
-            intent.putExtra("TITRE_MANGA", manga.getTitre_serie());
-            v.getContext().startActivity(intent);
+            try {
+                // On passe les DEUX informations cruciales
+                intent.putExtra("TITRE_MANGA", manga.getTitre_serie());
+                intent.putExtra("NUMERO_TOME", manga.getNumero_tome());
+                v.getContext().startActivity(intent);
+            } catch (Exception e) { e.printStackTrace(); }
         });
     }
 

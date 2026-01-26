@@ -1,130 +1,234 @@
 [
   {
-    "url_source": "https://www.nautiljon.com/mangas/300+jours+avec+toi/volume-1,939344.html",
-    "titre_serie": "300 jours avec Toi",
+    "url_source": "https://www.nautiljon.com/mangas/frieren/volume-1,936386.html",
+    "titre_serie": "Frieren",
     "numero_tome": "1",
     "edition": "Édition Standard",
-    "ean": "9782818991978",
-    "editeur_fr": "Doki-Doki",
-    "date_parution": "14/09/2020",
-    "prix": "7.50 €",
-    "nb_pages": "228",
+    "ean": "9791032710838",
+    "editeur_fr": "Ki-oon",
+    "date_parution": "18/08/2020",
+    "prix": "7.95 €",
+    "nb_pages": "192",
     "auteurs": [
-      "Kiritomo Masaki",
-      "Nagashii Kouhei"
+      "Yamada Kanehito",
+      "Abe Tsukasa (dessinateur)"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Aventure",
+      "Drame",
+      "Fantasy",
+      "Slice of Life",
+      "Amitié",
+      "Combats",
+      "Contes et légendes",
+      "Démons",
+      "Elfe",
+      "Magie",
+      "Médiéval",
+      "Nostalgie",
+      "Quotidien",
+      "Voyage"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/11/68/mini/frieren_1936386.webp?11690713093",
+    "resume": "Le jeune héros Himmel et ses compagnons, l'elfe Frieren , le nain Eisen et le prêtre Heiter , rentrent victorieux de leur combat contre le roi des démons. Au bout de dix années d'efforts, ils ont ramené la paix dans le royaume. Il est temps pour eux de retrouver une vie normale... Difficile à imaginer après tant d'aventures en commun ! Frieren , elle, ne semble guère touchée par la séparation. Pour la magicienne à la longévité exceptionnelle, une décennie ne pèse pas lourd. Elle reprend la route en solo et promet de retrouver ses camarades un demi-siècle plus tard. Elle tient parole... mais ces retrouvailles sont aussi les derniers instants passés avec Himmel , devenu un vieillard qui s'éteint paisiblement sous ses yeux. Frieren est sous le choc... La vie des humains est si courte ! L'elfe a beau être experte en magie, il lui reste encore un long chemin à parcourir pour comprendre la race humaine... Son nouvel objectif : s'initier aux arcanes du cœur !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/spy×family/volume-1,36337.html",
+    "titre_serie": "SPY×FAMILY",
+    "numero_tome": "1",
+    "edition": "Édition Standard",
+    "ean": "9782380710243",
+    "editeur_fr": "Kurokawa",
+    "date_parution": "04/07/2019",
+    "prix": "7.30 €",
+    "nb_pages": "208",
+    "auteurs": [
+      "Endo Tatsuya (mangaka 1)"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Action",
+      "Aventure",
+      "Comédie",
+      "Mystère",
+      "Assassinat",
+      "Espionnage",
+      "Famille",
+      "Guerre",
+      "Mensonges",
+      "Organisations secrètes",
+      "Politique",
+      "Super pouvoirs",
+      "Terrorisme"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/73/mini/36337.webp?11758380091",
+    "resume": "Sauvez le monde avec l'élite des agents (très) spéciaux : la famille Forger ! Une comédie d'espionnage pétillante ! Twilight , le plus grand espion du monde, doit pour sa nouvelle mission créer une famille de toutes pièces afin de pouvoir s'introduire dans la plus prestigieuse école de l'aristocratie. Totalement dépourvu d'expérience familiale, il va adopter une petite fille en ignorant qu'elle est télépathe, et s'associer à une jeune femme timide, sans se douter qu'elle est une redoutable tueuse à gages. Ce trio atypique va devoir composer pour passer inaperçu, tout en découvrant les vraies valeurs d'une famille unie et aimante.",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/spy×family/volume-2,41667.html",
+    "titre_serie": "SPY×FAMILY",
+    "numero_tome": "2",
+    "edition": "Édition Standard",
+    "ean": "9782380710250",
+    "editeur_fr": "Kurokawa",
+    "date_parution": "04/10/2019",
+    "prix": "7.30 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Endo Tatsuya (mangaka 1)"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Action",
+      "Aventure",
+      "Comédie",
+      "Mystère",
+      "Assassinat",
+      "Espionnage",
+      "Famille",
+      "Guerre",
+      "Mensonges",
+      "Organisations secrètes",
+      "Politique",
+      "Super pouvoirs",
+      "Terrorisme"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/76/mini/41667.webp?11758380151",
+    "resume": "Anya a finalement réussi à intégrer l'académie d' Eden !! Mais pas le temps de souffler, car la prochaine étape de l'opération Stryx est de faire d' Anya une \"élève impériale\", titre donné aux plus brillants esprits de l'académie, afin d'intégrer le cercle social très fermé des \"élèves impériaux\" auquel Desmond appartient !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/nana/volume-1,178.html",
+    "titre_serie": "Nana",
+    "numero_tome": "1",
+    "edition": "Édition Standard",
+    "ean": "9782840559573",
+    "editeur_fr": "Akata",
+    "date_parution": "15/05/2000",
+    "prix": "6.99 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Yazawa Ai"
+    ],
+    "genres_themes": [
+      "Shojo",
+      "Comédie",
+      "Drame",
+      "Erotique",
+      "Mature",
+      "Romance",
+      "Slice of Life",
+      "Adultère",
+      "Amour",
+      "Colocation",
+      "Mensonges",
+      "Musique",
+      "Quotidien",
+      "Secrets",
+      "Sexe",
+      "Triangle amoureux"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/87/mini/nana_1178.webp?11738928860",
+    "resume": "Deux jeunes filles portant un prénom synonyme de bonheur vont, par leur propre volonté, mettre leur destin en marche. Voici deux histoires d'amour et d'émotions vécues en parallèle par ces deux jeunes filles portant le même prénom Nana !!",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/black★rock+shooter+-+innocent+soul/volume-1,7082.html",
+    "titre_serie": "Black★Rock Shooter - Innocent Soul",
+    "numero_tome": "1",
+    "edition": "Édition Standard",
+    "ean": "9782809431193",
+    "editeur_fr": "Panini",
+    "date_parution": "02/11/2011",
+    "prix": "8.29 €",
+    "nb_pages": "200",
+    "auteurs": [
+      "Huke",
+      "Suzuki Sanami"
     ],
     "genres_themes": [
       "Seinen",
-      "Drame",
-      "Romance",
-      "Surnaturel",
-      "Amour",
-      "Mort"
-    ],
-    "image_url": "https://www.nautiljon.com/images/manga_volumes/11/44/mini/300_jours_avec_toi_1939344.webp?11656579687",
-    "resume": "En ce jour de printemps rempli de pétales de fleurs de cerisier, je l'ai rencontrée. Une fille solaire et pleine de vie. Mais lorsque j'ai pris sa main, un nombre troublant est apparu au-dessus de sa tête : \"300\". Voici notre histoire commune, au fil des jours qui défilent trop vite..."
-  },
-  {
-    "url_source": "https://www.nautiljon.com/mangas/.hack--xxxx/volume-1,3264.html",
-    "titre_serie": ".Hack//XXXX",
-    "numero_tome": "1",
-    "edition": "Édition Standard",
-    "ean": "9782809409147",
-    "editeur_fr": "Panini",
-    "date_parution": "09/09/2006",
-    "prix": "8.95 €",
-    "nb_pages": "208",
-    "auteurs": [
-      "Matsuyama Hiroshi",
-      "Kikuya Megane"
-    ],
-    "genres_themes": [
-      "Shonen",
       "Action",
-      "Aventure",
-      "Comédie",
       "Drame",
-      "Science-fiction",
-      "Enquête",
-      "Jeux vidéo"
+      "Fantastique",
+      "School Life",
+      "Slice of Life",
+      "Surnaturel"
     ],
-    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/46/mini/3264.webp?11597434607",
-    "resume": "Le jeu en ligne \" The World \" est un macrocosme dans lequel évoluent de nombreuses séries indépendantes évoquant le vécu des joueurs. . Hack//XXXX raconte le destin de Kite et Orca . La vie de Kite devient une véritable tragédie le jour où il se connecte pour la première fois au célèbre jeu. Il y retrouve son ami qui disparaît soudainement alors qu'une jeune fille venait de lui remettre un mystérieux bracelet. Mais la réalité dépasse la simple fiction, et au lendemain de la partie, Kite découvre qu' Orca est plongé dans le coma. Il est devenu un \"disparu\" comme on les appelle dans The World .Commence alors une période d'errance pour Kite qui cherche désespérément à sauver son ami. Pour parvenir à la délivrance, il devra avancer sur un chemin semé de défis et de combats."
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/28/mini/7082.webp?11524315053",
+    "resume": "Black Star vient d'arriver dans la ville abandonnée . Cet étrange personnage, au look assez spécial, rencontre alors Ret , un survivant, qui l'invite chez elle, ainsi que Oi , sa petite soeur. Mais après le repas, Oi est introuvable. Black et Ret partent alors à sa recherche et la trouve morte , sous la signature de Jack le tueur , le criminel qui apporte la terreur à tous les survivants. Black Star , après avoir fait usage de son arme très spéciale contre l'ennemi, comprend alors que Ret et Oi sont déjà morts , et qu'ils ont du revenir dans cette ville fantôme pour mourir une nouvelle fois !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
   },
   {
-    "url_source": "https://www.nautiljon.com/mangas/.hack--xxxx/volume-2,3265.html",
-    "titre_serie": ".Hack//XXXX",
+    "url_source": "https://www.nautiljon.com/mangas/black★rock+shooter+-+innocent+soul/volume-2,7083.html",
+    "titre_serie": "Black★Rock Shooter - Innocent Soul",
     "numero_tome": "2",
     "edition": "Édition Standard",
-    "ean": "9782809409345",
+    "ean": "9782809431919",
     "editeur_fr": "Panini",
-    "date_parution": "26/03/2007",
-    "prix": "8.95 €",
-    "nb_pages": "204",
+    "date_parution": "28/12/2011",
+    "prix": "8.29 €",
+    "nb_pages": "200",
     "auteurs": [
-      "Matsuyama Hiroshi",
-      "Kikuya Megane"
+      "Huke",
+      "Suzuki Sanami"
     ],
     "genres_themes": [
-      "Shonen",
+      "Seinen",
       "Action",
-      "Aventure",
-      "Comédie",
       "Drame",
-      "Science-fiction",
-      "Enquête",
-      "Jeux vidéo"
+      "Fantastique",
+      "School Life",
+      "Slice of Life",
+      "Surnaturel"
     ],
-    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/56/mini/3265.webp?11597434655",
-    "resume": "Helba apprend à Kite qu'il est à l'origine des événements de Yokohama. Le pouvoir du Data Drain a franchi les portes de The World . Lios ne peut plus laisser Kite utiliser son bracelet. Il décide d'effacer son personnage, mais en vain. Kite dépasse les limites du système. Malgré les risques qu'il fait encourir aux autres, Kite choisit de continuer sa lutte contre les Phases . Parviendra-t-il à sauver les Disparus sans semer le chaos sur la planète ?"
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/38/mini/7083.webp?11524315061",
+    "resume": "Que ce soit face à l'âme d'une chanteuse qui n'a jamais assouvi son désir de gloire, ou bien contre celle d'une jeune fille qui regrette de n'avoir pas dit à sa mère qu'elle l'aimait, Rock , la Black Star , sent ses émotions refaire surface. Elle poursuit ainsi son voyage vers des souvenirs souvent douloureux.",
+    "lu": false,
+    "suivi": false,
+    "possede": false
   },
   {
-    "url_source": "https://www.nautiljon.com/mangas/.hack--g.u.-/volume-1,3266.html",
-    "titre_serie": ".Hack//G.U.+",
-    "numero_tome": "1",
+    "url_source": "https://www.nautiljon.com/mangas/black★rock+shooter+-+innocent+soul/volume-3,7084.html",
+    "titre_serie": "Black★Rock Shooter - Innocent Soul",
+    "numero_tome": "3",
     "edition": "Édition Standard",
-    "ean": "9782809402858",
+    "ean": "9782809433104",
     "editeur_fr": "Panini",
-    "date_parution": "23/06/2006",
-    "prix": "8.95 €",
-    "nb_pages": "206",
+    "date_parution": "01/06/2012",
+    "prix": "8.29 €",
+    "nb_pages": "200",
     "auteurs": [
-      "Hamazaki Tatsuya",
-      "Morita Yuzuka"
+      "Huke",
+      "Suzuki Sanami"
     ],
     "genres_themes": [
-      "Shonen",
-      "Aventure",
+      "Seinen",
+      "Action",
+      "Drame",
       "Fantastique",
-      "Jeux",
-      "Monde virtuel"
+      "School Life",
+      "Slice of Life",
+      "Surnaturel"
     ],
-    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/66/mini/3266.webp?11597005112",
-    "resume": "Nous sommes en 2017. Le jeu en ligne \" The World \" comptabilise plus de 12 millions de joueurs à travers le monde. Si le principe du jeu n'a pas changé, l'atmosphère est radicalement différente. Là où autrefois il était coutume de faire équipe pour explorer l'univers et compléter des quêtes, aujourd'hui les joueurs s'organisent en bande afin de tuer les plus faibles..."
-  },
-  {
-    "url_source": "https://www.nautiljon.com/mangas/.hack--g.u.-/volume-2,8222.html",
-    "titre_serie": ".Hack//G.U.+",
-    "numero_tome": "2",
-    "edition": "Édition Standard",
-    "ean": "9782809403336",
-    "editeur_fr": "Panini",
-    "date_parution": "04/07/2007",
-    "prix": "8.95 €",
-    "nb_pages": "170",
-    "auteurs": [
-      "Hamazaki Tatsuya",
-      "Morita Yuzuka"
-    ],
-    "genres_themes": [
-      "Shonen",
-      "Aventure",
-      "Fantastique",
-      "Jeux",
-      "Monde virtuel"
-    ],
-    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/22/mini/8222.webp?11597005153",
-    "resume": "Haseo engage une lutte acharnée contre Endrance et l' AIDA possédant son esprit. Tri-Edge , de son côté, réapparaît et modifie le système de \" The World \". Désormais, tous les joueurs présents au moment de l'attaque se trouvent dans l'impossibilité de se déconnecter. Leur esprit est prisonnier du jeu !!"
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/48/mini/7084.webp?11524315067",
+    "resume": "C'est à l'occasion d'un combat entre une gardienne de l' Hazama et des Black Stars , que nous apprendrons qui est vraiment Lamb , et la raison pour laquelle elle est devenue protectrice de Rock . Nous saurons aussi pourquoi Dead ne cesse de se nourrir d'âmes, et surtout qui est vraiment Rock.",
+    "lu": false,
+    "suivi": false,
+    "possede": false
   },
   {
     "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-1,28754.html",
@@ -149,6 +253,373 @@
       "Harem"
     ],
     "image_url": "https://www.nautiljon.com/images/manga_volumes/00/45/mini/28754.webp?11649238573",
-    "resume": "Fûtarô , un lycéen brillant mais fauché, décroche un petit boulot de rêve : professeur particulier pour une famille fortunée. Or, le garçon déchante lorsqu'il réalise que ce n'est pas un élève qu'il va devoir gérer, mais des quintuplées aussi belles que cancres à souhait… Entre Ichika la désordonnée, Nino la protectrice, Miku la réservée, Yotsuba la joviale et Itsuki la susceptible, Fûtarô va devoir prendre son courage à deux mains pour relever le défi que représentent les sœurs Nakano ! Une chose est sûre, le jeune mangaka Negi Haruba sait comment tenir son public en haleine ! Car dès les premières pages, on découvre le héros, Fûtarô , en compagnie d'une jeune fille en robe de mariée qui est… l'une des cinq sœurs Nakano ! Alors, qui de Ichika , Nino , Miku , Yotsuba ou de Itsuki le jeune professeur particulier va-t-il épouser ? Le secret sera gardé jusqu'au bout car aussi différentes soient elles, aucune des cinq turbulentes jumelles ne semble apprécier ce jeune professeur particulier qui leur est imposé ! Chacune à leur manière, elles font tout pour l'empêcher de donner ses cours. Et les voilà engagées dans un hilarant jeu du chat et de la souris qui obligera Fûtarô à trouver des stratégies à la mesure de leurs extravagances afin de les convaincre d'étudier !"
+    "resume": "Fûtarô , un lycéen brillant mais fauché, décroche un petit boulot de rêve : professeur particulier pour une famille fortunée. Or, le garçon déchante lorsqu'il réalise que ce n'est pas un élève qu'il va devoir gérer, mais des quintuplées aussi belles que cancres à souhait… Entre Ichika la désordonnée, Nino la protectrice, Miku la réservée, Yotsuba la joviale et Itsuki la susceptible, Fûtarô va devoir prendre son courage à deux mains pour relever le défi que représentent les sœurs Nakano ! Une chose est sûre, le jeune mangaka Negi Haruba sait comment tenir son public en haleine ! Car dès les premières pages, on découvre le héros, Fûtarô , en compagnie d'une jeune fille en robe de mariée qui est… l'une des cinq sœurs Nakano ! Alors, qui de Ichika , Nino , Miku , Yotsuba ou de Itsuki le jeune professeur particulier va-t-il épouser ? Le secret sera gardé jusqu'au bout car aussi différentes soient elles, aucune des cinq turbulentes jumelles ne semble apprécier ce jeune professeur particulier qui leur est imposé ! Chacune à leur manière, elles font tout pour l'empêcher de donner ses cours. Et les voilà engagées dans un hilarant jeu du chat et de la souris qui obligera Fûtarô à trouver des stratégies à la mesure de leurs extravagances afin de les convaincre d'étudier !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-2,28755.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "2",
+    "edition": "Édition Standard",
+    "ean": "9782811653231",
+    "editeur_fr": "Pika",
+    "date_parution": "15/12/2017",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/55/mini/28755.webp?11590596712",
+    "resume": "Fûtarô Uesugi a décorché un petit boulot trés bien payé : professeur particulier. Mais ses élèves, des quintuplées, lui donnent du fil à retordre. Alors qu'il a enfin obtenu la confiance de Miku , il est malencontreusement surpris en flagrant délit de position douteuse envers Nino . Accusé d'agression sexuelle, parviendra-t-il à prouver son innocence seul face au clan des filles Nakano ?",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-3,32056.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "3",
+    "edition": "Édition Standard",
+    "ean": "9782811653248",
+    "editeur_fr": "Pika",
+    "date_parution": "16/03/2018",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/65/mini/32056.webp?11590596731",
+    "resume": "Fûtarô n'a pas encore gagné la confiance totale des cinq sœurs, cependant, être parvenu à les réunir pour le feu d'artifice annuel lui a permis de marquer des points. Mais voilà que le couperet tombe : le père Nakano ne prolongera le contrat du jeune professeur particulier que si ses filles obtiennent de bons résultats à leur examen de mi-semestre. Malheureusement, il ne leur reste qu'une semaine de révisions. Fûtarô parviendra-t-il à relever le défi ?",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-4,32057.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "4",
+    "edition": "Édition Standard",
+    "ean": "9782811653255",
+    "editeur_fr": "Pika",
+    "date_parution": "17/05/2018",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/75/mini/32057.webp?11598258810",
+    "resume": "Fûtarô Uesugi , menacé de renvoi suite aux mauvais résultats des quintuplées aux examens de mi-semestre, se voit sauver la mise par Nino qui réussit à embobiner son père avec une interprétation très \"spéciale\" des notes qu'elles ont obtenues. Touché, le jeune professeur est plus que jamais déterminé à aider les jumelles à s'améliorer. Mais ce sera après la classe nature de trois jours qui vient de commencer et promet d'être animée !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-5,32058.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "5",
+    "edition": "Édition Standard",
+    "ean": "9782811653262",
+    "editeur_fr": "Pika",
+    "date_parution": "17/07/2018",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/85/mini/32058.webp?11758356176",
+    "resume": "Ayant trop longtemps négligé la maladie qu'il a contracté de Raiha , Fuutarou se rétablit à l'hôpital, tandis qu' Itsuki lui rend visite et lui demande la raison de son engouement autour des études. Se remémorant ses jours à l'école élémentaire et sa rencontre avec \"cette fille\", Fuutarou décide de raconter tout cela à Itsuki . Après être sorti de l'hôpital, il décide d'avoir un rendez-vous avec Yotsuba , bien qu'il ait refusé les invitations de Miku et d' Ichika . Après diverses situations, Fuutarou parle à Yotsuba au sujet du fait qu'elle favorise toujours ses sœurs à elle-même. Après leur rendez-vous, ils finissent par se reposer dans un endroit que Yotsuba aime, à savoir un parc pour enfants. Le lendemain, Fuutarou présente des fiches d'exercices aux cinq sœurs. Nino , irritée, déchire sa propre feuille, une dispute éclatant donc entre elle et Itsuki , qui a compris les efforts de Fuutarou pour élaborer ces fiches manuscrites. Après que les deux filles soient parties chacune de leur côté, un Fuutarou désorienté tombe nez à nez avec la fille de son enfance...",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-6,32086.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "6",
+    "edition": "Édition Standard",
+    "ean": "9782811653279",
+    "editeur_fr": "Pika",
+    "date_parution": "14/09/2018",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/68/mini/32086.webp?11758356648",
+    "resume": "Alors que les examens de fin de semestre approchent à grands pas, Nino et Itsuki se sont violemment disputées et ont chacune quitté la maison. Yotsuba , quant à elle, se laisse accaparer par le club d'athlétisme. Pas facile pour Fûtaro d'honorer ses engagements auprès du père Nakano quand trois élèves sur cinq manquent à l'appel ! Et comble de malchance, c'est le moment que choisit la petite fille de la photo pour réapparaître dans sa vie !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-7,32093.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "7",
+    "edition": "Édition Standard",
+    "ean": "9782811653286",
+    "editeur_fr": "Pika",
+    "date_parution": "17/12/2018",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/39/mini/32093.webp?11618131165",
+    "resume": "La dispute étant passée, Fuutarou et les cinq sœurs Nakano peuvent d'ores et déjà recommencer à étudier pour l'examen final. Cependant, Ichika montre des signes de fatigue à cause de ses nombreux petits-boulots, et en particulier celui d'actrice. D'un autre côté, Itsuki est invitée à dîner par le père des quintuplées, celui-ci révélant que si elles n'ont pas de notes satisfaites à l'examen, elles seront transférées dans un autre établissement, à Kyoto. L'examen arrive finalement, et toutes ont une note satisfaisante, à leur grande joie. Une fête est organisée. De son côté, Nino va rencontrer son père afin de lui annoncer qu'elles ne rentreront pas dans leur ancien appartement, combien même chaque sœur devrait travailler. Au milieu des paroles non encourageantes du père, Fuutarou vient chercher Nino sur une moto, laquelle le rejoint et lui dit quelque chose d'innatendu...",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-8,32437.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "8",
+    "edition": "Édition Standard",
+    "ean": "9782811653293",
+    "editeur_fr": "Pika",
+    "date_parution": "15/02/2019",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/73/mini/32437.webp?11618130456",
+    "resume": "Après que la famille de Fuutarou ait gagné à la loterie, elle se voit offrir un voyage pour une station thermale. Cependant, Fuutarou croise des visages familiers.. la famille Nakano est également de la partie ! Pendant leur temps de repos, Fuutarou se voit confronté à une nouvelle des plus déconcertantes : l'une de quintuplées veut mettre fin à la relation de ces dernières avec lui. Mais.. laquelle est-ce ?",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-9,33439.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "9",
+    "edition": "Édition Standard",
+    "ean": "9782811653309",
+    "editeur_fr": "Pika",
+    "date_parution": "17/04/2019",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/93/mini/33439.webp?11624376767",
+    "resume": "L'implication des quintuplées dans leurs études et celle de Fûtarô dans sa mission a fini par payer : ils font tous leur rentrée en terminale. Comble de bonheur pour les filles et de malchance pour Fûtarô , ils se retrouvent dans la même classe ! Et le moins que l'on puisse dire, c'est que la bande des six ne passe pas inaperçue ! Entre études, petits boulots, amours et amitiés, l'année risque de ne pas être de tout repos !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-10,35405.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "10",
+    "edition": "Édition Standard",
+    "ean": "9782811661533",
+    "editeur_fr": "Pika",
+    "date_parution": "17/06/2019",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/50/mini/the_quintessential_quintuplets_1035405.webp?11623150305",
+    "resume": "Un temps démis de ses fonctions, Fûtarô redevient officiellement le professeur particulier des quintuplées après avoir prouvé à leur père qu'il faisait bien partie du top 10 des meilleurs élèves au niveau national. L'heure est maintenant venue de partir en voyage scolaire à Kyoto et de se détendre. Hélas pour Fûtarô , les jumelles ne lui laissent aucun répit, chacune d'elles ayant décidé d'accaparer son attention aux dépens des activités prévues. Une lutte sans merci s'engage alors entre les sœurs, où tous les coups sont permis...",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-11,37868.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "11",
+    "edition": "Édition Standard",
+    "ean": "9782811661557",
+    "editeur_fr": "Pika",
+    "date_parution": "17/09/2019",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/86/mini/the_quintessential_quintuplets_1137868.webp?11758356511",
+    "resume": "Bien malgré lui, Fûtarô fait battre le cœur des soeurs Nakano . Et si les cinq sœurs usent de stratagèmes plus ou moins retors pour obtenir les faveurs de leur professeur particulier, au final, le lien qui les unit est bien plus fort que leur rivalité amoureuse. Un voyage dans le passé lève un voile sur les racines de ces liens et sur la véritable identité de la petite fille rencontrée à Kyoto, il y a six ans.",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-12,45414.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "12",
+    "edition": "Édition Standard",
+    "ean": "9782811661571",
+    "editeur_fr": "Pika",
+    "date_parution": "15/11/2019",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/41/mini/the_quintessential_quintuplets_1245414.webp?11758356589",
+    "resume": "Le dernier festival culturel pour Futaro et les quintuplées, bien que Ichika ait finalement décidé de se consacrer totalement à sa carrière d'actrice et ait quitté l'établissement scolaire, va commencer. Un problème concernant le stand à tenir divise déjà leur classe... Malgré tout, les préparations avancent et le festival arrive. Futaro a une révélation à faire aux quintuplées qui risque de semer le trouble dans leurs esprits et durant le festival. Mais Uesugi n'aura pas non plus le temps de se reposer, une ancienne connaissance réapparaît. Les événements et les histoires vont s'entremêler durant le festival, Futaro parviendra-t-il à tout gérer?",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-13,47550.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "13",
+    "edition": "Édition Standard",
+    "ean": "9782811661595",
+    "editeur_fr": "Pika",
+    "date_parution": "17/01/2020",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/05/mini/the_quintessential_quintuplets_1347550.webp?11637963759",
+    "resume": "Fûtarô a donné rendez-vous aux quintuplées à 15 heures et leur annonce qu'il choisira l'une d'elles lorsque le Festival du soleil levant touchera à sa fin. Alors que chacune affronte la situation à sa façon en attendant la réponse de Fûtarô , d'autres crises existentielles viennent perturber ce dernier événement de lycée. Les quintuplées devront s'armer de détermination, d'un extincteur et de pancakes avant le verdict qu'elles espèrent toutes en leur faveur.",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/the+quintessential+quintuplets/volume-14,50392.html",
+    "titre_serie": "The Quintessential Quintuplets",
+    "numero_tome": "14",
+    "edition": "Édition Standard",
+    "ean": "9782811661618",
+    "editeur_fr": "Pika",
+    "date_parution": "17/04/2020",
+    "prix": "7.20 €",
+    "nb_pages": "192",
+    "auteurs": [
+      "Haruba Negi"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Comédie",
+      "Romance",
+      "School Life",
+      "Adolescence",
+      "Amour",
+      "Harem"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/00/29/mini/the_quintessential_quintuplets_1450392.webp?11758356596",
+    "resume": "Si Fûtarô a avoué aux cinq sœurs qu'il les aimait toutes, il y en a une qui compte plus que tout pour lui. Comme prévu, c'est le dernier jour de la fête du lycée qu'il est allé retrouver, sûr de lui, l'élue de son cœur. Mais saura-t-il trouver les mots pour lui faire comprendre son choix ? Et les sœurs Nakano lui apporteront-elles leur soutien ? Une décision lourde de conséquences pour l'avenir du jeune professeur particulier et celui des quintuplées !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
   }
 ]

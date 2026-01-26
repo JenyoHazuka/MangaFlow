@@ -21,7 +21,8 @@
             android:id="@+id/tv_total_series"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_total_tomes"  android:text="0 Séries disponibles"
+            android:layout_below="@id/tv_total_tomes"
+            android:text="0 Séries disponibles"
             android:textSize="14sp"
             android:textColor="#666666"
             android:layout_marginBottom="12dp" />
@@ -31,12 +32,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" android:text="Scan" />
-
+            android:layout_centerVertical="true"
+            android:text="Scan" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_collection"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 </LinearLayout>

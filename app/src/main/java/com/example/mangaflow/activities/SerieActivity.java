@@ -130,7 +130,8 @@ public class SerieActivity extends AppCompatActivity {
                             obj.optString("edition"),
                             obj.optString("ean"),
                             obj.optString("editeur_fr"),
-                            "", 0.0f, 0, null, null, ""
+                            "", 0.0f, 0, null, null, "",
+                            false, false, false
                     ));
                 }
             }

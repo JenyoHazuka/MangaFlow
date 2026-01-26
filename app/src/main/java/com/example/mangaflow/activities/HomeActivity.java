@@ -143,11 +143,15 @@ public class HomeActivity extends AppCompatActivity {
                 String editeur = obj.optString("editeur_fr", "");
                 String date = obj.optString("date_parution", "");
                 String resume = obj.optString("resume", "");
+                Boolean lu = obj.optBoolean("lu", false);
+                Boolean suivi = obj.optBoolean("suivi", false);
+                Boolean possede = obj.optBoolean("possede", false);
 
                 // On crée l'objet avec les données récupérées
                 list.add(new MangaClass(
                         titre, tome, img, edit, isbn, editeur, date,
-                        0.0f, 0, null, null, resume
+                        0.0f, 0, null, null, resume,
+                        lu, suivi, possede
                 ));
             }
         } catch (Exception e) {
