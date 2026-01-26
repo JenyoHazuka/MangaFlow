@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class CollectionActivity extends AppCompatActivity {
@@ -145,6 +147,20 @@ public class CollectionActivity extends AppCompatActivity {
                 b.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#CCCCCC")));
                 b.setTextColor(Color.BLACK);
             }
+        }
+    }
+
+    public JSONArray getSeriesReference() {
+        try {
+            // Lecture du fichier depuis res/raw/series.json
+            InputStream is = getResources().openRawResource(R.raw.series);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            is.close();
+            return new JSONArray(new String(buffer, "UTF-8"));
+        } catch (Exception e) {
+            Log.e("JSON_ERROR", "Erreur lecture series.JSON", e);
+            return new JSONArray();
         }
     }
 }

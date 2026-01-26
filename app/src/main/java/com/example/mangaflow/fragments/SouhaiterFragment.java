@@ -6,13 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangaflow.R;
 import com.example.mangaflow.activities.CollectionActivity;
 import com.example.mangaflow.utils.SerieAdapter;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,51 +22,69 @@ public class SouhaiterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_souhaiter, container, false);
 
         CollectionActivity activity = (CollectionActivity) getActivity();
-        JSONArray collection = (activity != null) ? activity.getCollection() : new JSONArray();
+        if (activity == null) return view;
+
+        JSONArray collection = activity.getCollection();
+        JSONArray seriesRef = activity.getSeriesReference();
 
         TextView tvSouhaits = view.findViewById(R.id.tv_souhaiter_title);
         TextView tvSubtitle = view.findViewById(R.id.tv_souhaiter_subtitle);
         RecyclerView rv = view.findViewById(R.id.rv_souhaiter);
 
-        int nbTomesSouhaiter = 0; // C'est cette variable que tu utilises
+        int nbTomesSouhaiter = 0;
         List<JSONObject> filteredList = new ArrayList<>();
 
         try {
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
-                JSONArray mangas = serie.getJSONArray("mangas");
+                String nomSerie = serie.optString("nom");
 
-                boolean aEnvie = false;
-                boolean possèdeAuMoinsUn = false;
-                int countForSerie = 0;
-
-                for (int j = 0; j < mangas.length(); j++) {
-                    JSONObject m = mangas.getJSONObject(j);
-                    // On compte les tomes souhaités
-                    if (m.getBoolean("souhaiter")) {
-                        aEnvie = true;
-                        countForSerie++;
-                    }
-                    // On vérifie si on en possède déjà
-                    if (m.getBoolean("posséder")) {
-                        possèdeAuMoinsUn = true;
+                // 1. Jointure avec series.JSON
+                int totalTheorique = 0;
+                for (int j = 0; j < seriesRef.length(); j++) {
+                    JSONObject ref = seriesRef.getJSONObject(j);
+                    if (ref.optString("titre").equalsIgnoreCase(nomSerie)) {
+                        JSONArray editions = ref.optJSONArray("editions");
+                        if (editions != null && editions.length() > 0) {
+                            String rawNb = editions.getJSONObject(0).optString("nb_tomes", "0");
+                            totalTheorique = Integer.parseInt(rawNb.replaceAll("[^0-9]", ""));
+                        }
+                        break;
                     }
                 }
 
-                // Critère : On affiche la série seulement si on ne possède rien du tout
-                if (aEnvie && !possèdeAuMoinsUn) {
+                // 2. Vérification des critères
+                JSONArray mangas = serie.optJSONArray("mangas");
+                boolean aEnvie = false;
+                boolean possedeAuMoinsUn = false;
+                int countSouhaitsSerie = 0;
+
+                if (mangas != null) {
+                    for (int k = 0; k < mangas.length(); k++) {
+                        JSONObject m = mangas.getJSONObject(k);
+                        if (m.optBoolean("souhaiter", false)) {
+                            aEnvie = true;
+                            countSouhaitsSerie++;
+                        }
+                        if (m.optBoolean("posséder", false)) possedeAuMoinsUn = true;
+                    }
+                }
+
+                // 3. Affichage si souhaité et 0 possédé
+                if (aEnvie && !possedeAuMoinsUn) {
+                    serie.remove("affichage_collection"); // Désactive le mode barre de progression
+                    serie.put("affichage_souhaiter", true);
+                    serie.put("nombre_tome_total", totalTheorique);
                     filteredList.add(serie);
-                    nbTomesSouhaiter += countForSerie;
+                    nbTomesSouhaiter += countSouhaitsSerie;
                 }
             }
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
 
-        // --- CORRECTION DES TEXTES ---
         tvSouhaits.setText(nbTomesSouhaiter + " Tomes souhaités");
         tvSubtitle.setText(filteredList.size() + " Séries");
 
-        // --- CONFIGURATION DU RECYCLERVIEW ---
-        rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new SerieAdapter(filteredList));
 
         return view;

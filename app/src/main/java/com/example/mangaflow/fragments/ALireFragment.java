@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangaflow.R;
 import com.example.mangaflow.activities.CollectionActivity;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ALireFragment extends Fragment {
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_a_lire, container, false);
@@ -31,51 +31,42 @@ public class ALireFragment extends Fragment {
         TextView tvSubtitle = view.findViewById(R.id.tv_alire_subtitle);
         RecyclerView rv = view.findViewById(R.id.rv_alire);
 
-        // On utilise getContext() ici pour dire au RecyclerView comment s'afficher
-        rv.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        int aLireCount = 0;
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        int totalALire = 0;
         List<JSONObject> filteredList = new ArrayList<>();
 
         try {
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
+
+                // NETTOYAGE : On retire les drapeaux des autres fragments
+                serie.remove("affichage_collection");
+                serie.remove("nb_manquant");
+                serie.remove("affichage_souhaiter");
+
                 JSONArray mangas = serie.optJSONArray("mangas");
-
-                if (mangas == null) continue;
-
-                boolean serieHasUnread = false;
-                for (int j = 0; j < mangas.length(); j++) {
-                    JSONObject m = mangas.getJSONObject(j);
-
-                    // On vérifie si possédé ET non lu
-                    if (m.optBoolean("posséder", false) && !m.optBoolean("lu", false)) {
-                        aLireCount++;
-                        serieHasUnread = true;
+                int countALireSerie = 0;
+                if (mangas != null) {
+                    for (int j = 0; j < mangas.length(); j++) {
+                        JSONObject m = mangas.getJSONObject(j);
+                        if (m.optBoolean("posséder", false) && !m.optBoolean("lu", false)) {
+                            countALireSerie++;
+                        }
                     }
                 }
 
-                if (serieHasUnread) {
+                if (countALireSerie > 0) {
+                    serie.put("nb_a_lire", countALireSerie);
                     filteredList.add(serie);
+                    totalALire += countALireSerie; // N'oubliez pas d'incrémenter le total ici
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
 
-        // --- AFFICHAGE ---
-        if (filteredList.isEmpty()) {
-            tvALire.setText("Tout est lu !");
-            tvSubtitle.setText("0 Séries");
-        } else {
-            tvALire.setText(aLireCount + " Tomes à lire");
-            tvSubtitle.setText(filteredList.size() + " Séries");
+        tvALire.setText(totalALire + " Tomes à lire");
+        tvSubtitle.setText(filteredList.size() + " Séries");
 
-            // UTILISATION DE TON CONSTRUCTEUR ACTUEL :
-            SerieAdapter adapter = new SerieAdapter(filteredList);
-            rv.setAdapter(adapter);
-        }
-
+        rv.setAdapter(new SerieAdapter(filteredList));
         return view;
     }
 }
