@@ -3,12 +3,12 @@ package com.example.mangaflow.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangaflow.R;
-import com.example.mangaflow.models.Manga;
 import com.example.mangaflow.utils.MangaAdapter;
 import com.example.mangaflow.utils.MangaClass;
 import org.json.JSONArray;
@@ -24,7 +24,6 @@ public class SerieActivity extends AppCompatActivity {
     private List<MangaClass> tomesDeLEdition = new ArrayList<>();
     private MangaAdapter adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +34,6 @@ public class SerieActivity extends AppCompatActivity {
 
         if (sName == null) { finish(); return; }
 
-        // Liaison UI
         TextView tvTitle = findViewById(R.id.tv_serie_title_header);
         if (tvTitle != null) tvTitle.setText(sName);
 
@@ -44,25 +42,11 @@ public class SerieActivity extends AppCompatActivity {
 
         // --- NAVIGATION ---
         findViewById(R.id.btn_back_serie).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_home).setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
-        });
-
-        findViewById(R.id.btn_collection).setOnClickListener(v -> {
-            startActivity(new Intent(this, CollectionActivity.class));
-        });
-
-        findViewById(R.id.btn_planning).setOnClickListener(v -> {
-            startActivity(new Intent(this, PlanningActivity.class));
-        });
-
-        findViewById(R.id.btn_search).setOnClickListener(v -> {
-            startActivity(new Intent(this, SearchActivity.class));
-        });
-
-        findViewById(R.id.btn_maps).setOnClickListener(v -> {
-            startActivity(new Intent(this, MapsActivity.class));
-        });
+        findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+        findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
+        findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
+        findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
 
         loadTomes(sName, eName);
     }
@@ -75,25 +59,38 @@ public class SerieActivity extends AppCompatActivity {
             isSeries.read(bufferS);
             isSeries.close();
 
-            JSONArray arraySeries = new JSONArray(new String(bufferS, "UTF-8"));
+            JSONArray arraySeries = new JSONArray(new String(bufferS, StandardCharsets.UTF_8));
 
             for (int i = 0; i < arraySeries.length(); i++) {
                 JSONObject obj = arraySeries.getJSONObject(i);
-                // On compare avec le titre de la série
                 if (obj.optString("titre").equalsIgnoreCase(serie)) {
 
-                    // Extraction de l'auteur
+                    // Extraction de l'auteur et mise en place de la redirection
                     JSONArray auteursJ = obj.optJSONArray("auteurs");
                     if (auteursJ != null && auteursJ.length() > 0) {
                         JSONObject auteurObj = auteursJ.getJSONObject(0);
                         String nomAuteur = auteurObj.optString("nom", "Auteur inconnu");
-                        ((TextView) findViewById(R.id.tv_serie_auteur)).setText(nomAuteur);
+
+                        TextView tvAuteur = findViewById(R.id.tv_serie_auteur);
+                        if (tvAuteur != null) tvAuteur.setText(nomAuteur);
+
+                        // MODIFICATION : REDIRECTION BASÉE SUR LE CONTENU DU CHAMP
+                        View layoutAuteur = findViewById(R.id.layout_auteur_cliquable);
+                        if (layoutAuteur != null && tvAuteur != null) {
+                            layoutAuteur.setOnClickListener(v -> {
+                                // On récupère le texte directement du TextView au moment du clic
+                                String nomAEnvoyer = tvAuteur.getText().toString().trim();
+
+                                Intent intent = new Intent(SerieActivity.this, AuteurActivity.class);
+                                intent.putExtra("nom_auteur", nomAEnvoyer);
+                                startActivity(intent);
+                            });
+                        }
                     }
 
                     // Extraction nb_tomes et statut
                     JSONArray editionsJ = obj.optJSONArray("editions");
                     if (editionsJ != null && editionsJ.length() > 0) {
-                        // On cherche l'édition correspondante ou on prend la première par défaut
                         JSONObject editObj = editionsJ.getJSONObject(0);
                         String nb = editObj.optString("nb_tomes", "X");
                         String statut = editObj.optString("statut", "en cours");
@@ -113,13 +110,11 @@ public class SerieActivity extends AppCompatActivity {
             isMangas.read(bufferM);
             isMangas.close();
 
-            JSONArray arrayMangas = new JSONArray(new String(bufferM, "UTF-8"));
+            JSONArray arrayMangas = new JSONArray(new String(bufferM, StandardCharsets.UTF_8));
             tomesDeLEdition.clear();
 
             for (int i = 0; i < arrayMangas.length(); i++) {
                 JSONObject obj = arrayMangas.getJSONObject(i);
-
-                // On filtre par titre de série ET par éditeur
                 if (obj.optString("titre_serie").equalsIgnoreCase(serie) &&
                         obj.optString("editeur_fr").equalsIgnoreCase(editeur)) {
 
