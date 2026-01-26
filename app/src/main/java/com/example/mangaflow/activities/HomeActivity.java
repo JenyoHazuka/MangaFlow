@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.ParseException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,8 +24,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -82,6 +86,9 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Affichage des dernières sorties
+        chargerMangasHome();
 
         // Vers le Planning
         btnPlanning.setOnClickListener(v -> {
@@ -158,5 +165,59 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private void chargerMangasHome() {
+        try {
+            InputStream is = getResources().openRawResource(R.raw.mangas);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            is.close();
+
+            JSONArray array = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
+            List<MangaClass> tempListe = new ArrayList<>();
+
+            // Format de date correspondant à ton JSON : dd/MM/yyyy
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
+            Date aujourdhui = new Date();
+
+            // On parcourt du BAS vers le HAUT (i = length - 1 down to 0)
+            for (int i = array.length() - 1; i >= 0; i--) {
+                // Arrêt si on a déjà 50 mangas
+                if (tempListe.size() >= 50) break;
+
+                JSONObject obj = array.getJSONObject(i);
+                String dateSortieStr = obj.optString("date_parution", ""); // Assure-toi que la clé est correcte
+
+                try {
+                    Date dateSortie = sdf.parse(dateSortieStr);
+
+                    // On n'ajoute que si la date de sortie est AVANT ou EGALE à aujourd'hui
+                    if (dateSortie != null && !dateSortie.after(aujourdhui)) {
+                        tempListe.add(new MangaClass(
+                                obj.optString("titre_serie"),
+                                obj.optInt("numero_tome"),
+                                obj.optString("image_url"),
+                                obj.optString("edition"),
+                                obj.optString("ean"),
+                                obj.optString("editeur_fr"),
+                                "", 0.0f, 0, null, null, "",
+                                false, false, false
+                        ));
+                    }
+                } catch (ParseException e) {
+                    // Si la date est mal formatée, on peut décider de l'ignorer ou de l'afficher
+                    Log.e("HOME_DATE", "Format de date invalide pour : " + dateSortieStr);
+                }
+            }
+
+            // Mise à jour de l'adapter
+            mangaList.clear();
+            mangaList.addAll(tempListe);
+            adapter.notifyDataSetChanged();
+
+        } catch (Exception e) {
+            Log.e("HOME_ERROR", "Erreur lors du chargement : " + e.getMessage());
+        }
     }
 }

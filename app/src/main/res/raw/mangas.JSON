@@ -623,5 +623,79 @@
     "lu": false,
     "suivi": false,
     "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/chillin-+life+in+a+different+world/volume-6,960893.html",
+    "titre_serie": "Chillin' Life in a Different World",
+    "numero_tome": "6",
+    "edition": "Édition Standard",
+    "ean": "9782382750841",
+    "editeur_fr": "Meian",
+    "date_parution": "22/07/2022",
+    "prix": "6.95 €",
+    "nb_pages": "164",
+    "auteurs": [
+      "Kinojo Miya",
+      "Itomachi Akine",
+      "Katagiri (illustrateur)"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Action",
+      "Aventure",
+      "Comédie",
+      "Drame",
+      "Fantasy",
+      "Isekai",
+      "Romance",
+      "Slice of Life",
+      "Amour",
+      "Autre monde",
+      "Harem",
+      "Magie",
+      "Quotidien"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/12/39/mini/chillin_life_in_a_different_world_6960893.webp?11758364812",
+    "resume": "Bien que le fossé séparant humains et démons soit grand, Furio commence à entrapercevoir un espoir dans ses échanges avec le roi démon et ses subalternes. Il reste néanmoins toujours très hésitant quant à ce qu'il devrait faire, lui qui possède des pouvoirs presque trop grands pour être contrôlés. Mais lorsque l'ancien roi de Cryroad s'allie avec deux sœurs renardes et commence à semer le trouble en ville, Furio va à nouveau se retrouver au centre d'un tourbillon de problèmes... La vie de Furio commence à être à l'opposé du quotidien tranquille qu'il désirait ! Le moment de prendre une décision approche... !! Avoir des pouvoirs dépassant l'entendement ne rend décidément pas la vie facile !",
+    "lu": false,
+    "suivi": false,
+    "possede": false
+  },
+  {
+    "url_source": "https://www.nautiljon.com/mangas/chillin-+life+in+a+different+world/volume-12,1013670.html",
+    "titre_serie": "Chillin' Life in a Different World",
+    "numero_tome": "12",
+    "edition": "Édition Standard",
+    "ean": "9782385037550",
+    "editeur_fr": "Meian",
+    "date_parution": "13/03/2026",
+    "prix": "6.95 €",
+    "nb_pages": "160",
+    "auteurs": [
+      "Kinojo Miya",
+      "Itomachi Akine",
+      "Katagiri (illustrateur)"
+    ],
+    "genres_themes": [
+      "Shonen",
+      "Action",
+      "Aventure",
+      "Comédie",
+      "Drame",
+      "Fantasy",
+      "Isekai",
+      "Romance",
+      "Slice of Life",
+      "Amour",
+      "Autre monde",
+      "Harem",
+      "Magie",
+      "Quotidien"
+    ],
+    "image_url": "https://www.nautiljon.com/images/manga_volumes/12/07/mini/chillin_life_in_a_different_world_121013670.webp?11769262145",
+    "resume": "N/C",
+    "lu": false,
+    "suivi": false,
+    "possede": false
   }
 ]
