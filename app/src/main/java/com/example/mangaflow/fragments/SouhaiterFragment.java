@@ -28,7 +28,6 @@ public class SouhaiterFragment extends Fragment {
         JSONArray seriesRef = activity.getSeriesReference();
 
         TextView tvSouhaits = view.findViewById(R.id.tv_souhaiter_title);
-        TextView tvSubtitle = view.findViewById(R.id.tv_souhaiter_subtitle);
         RecyclerView rv = view.findViewById(R.id.rv_souhaiter);
 
         int nbTomesSouhaiter = 0;
@@ -39,50 +38,55 @@ public class SouhaiterFragment extends Fragment {
                 JSONObject serie = collection.getJSONObject(i);
                 String nomSerie = serie.optString("nom");
 
-                // 1. Jointure avec series.JSON
+                // 1. Jointure pour récupérer le total et l'éditeur
                 int totalTheorique = 0;
+                String editeurRef = "";
                 for (int j = 0; j < seriesRef.length(); j++) {
                     JSONObject ref = seriesRef.getJSONObject(j);
                     if (ref.optString("titre").equalsIgnoreCase(nomSerie)) {
                         JSONArray editions = ref.optJSONArray("editions");
                         if (editions != null && editions.length() > 0) {
-                            String rawNb = editions.getJSONObject(0).optString("nb_tomes", "0");
+                            JSONObject editObj = editions.getJSONObject(0);
+                            String rawNb = editObj.optString("nb_tomes", "0");
                             totalTheorique = Integer.parseInt(rawNb.replaceAll("[^0-9]", ""));
+                            editeurRef = editObj.optString("editeur", "");
                         }
                         break;
                     }
                 }
 
-                // 2. Vérification des critères
+                // 2. Vérification : On cherche si des tomes sont marqués "souhaiter"
                 JSONArray mangas = serie.optJSONArray("mangas");
-                boolean aEnvie = false;
+                int countSouhaitsInSerie = 0;
                 boolean possedeAuMoinsUn = false;
-                int countSouhaitsSerie = 0;
 
                 if (mangas != null) {
                     for (int k = 0; k < mangas.length(); k++) {
                         JSONObject m = mangas.getJSONObject(k);
-                        if (m.optBoolean("souhaiter", false)) {
-                            aEnvie = true;
-                            countSouhaitsSerie++;
-                        }
+                        if (m.optBoolean("souhaiter", false)) countSouhaitsInSerie++;
                         if (m.optBoolean("posséder", false)) possedeAuMoinsUn = true;
                     }
                 }
 
-                // 3. Affichage si souhaité et 0 possédé
-                if (aEnvie && !possedeAuMoinsUn) {
-                    serie.remove("affichage_collection"); // Désactive le mode barre de progression
-                    serie.put("affichage_souhaiter", true);
-                    serie.put("nombre_tome_total", totalTheorique);
-                    filteredList.add(serie);
-                    nbTomesSouhaiter += countSouhaitsSerie;
+                // 3. Logique d'affichage : Séries suivies mais non encore commencées (0 possédés)
+                if (countSouhaitsInSerie > 0 && !possedeAuMoinsUn) {
+                    JSONObject serieSouhait = new JSONObject(serie.toString());
+                    serieSouhait.put("affichage_souhaiter", true);
+                    serieSouhait.put("nombre_tome_total", totalTheorique);
+                    serieSouhait.put("editeur_fr", editeurRef);
+
+                    filteredList.add(serieSouhait);
+                    nbTomesSouhaiter += countSouhaitsInSerie;
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }
 
-        tvSouhaits.setText(nbTomesSouhaiter + " Tomes souhaités");
-        tvSubtitle.setText(filteredList.size() + " Séries");
+        // MISE À JOUR DE L'EN-TÊTE
+        if (filteredList.size() > 1) {
+            tvSouhaits.setText(filteredList.size() + " Séries Souhaitées");
+        } else {
+            tvSouhaits.setText(filteredList.size() + " Série Souhaitée");
+        }
 
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new SerieAdapter(filteredList));

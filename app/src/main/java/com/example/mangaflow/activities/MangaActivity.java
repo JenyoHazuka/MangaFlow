@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -294,15 +295,29 @@ public class MangaActivity extends BaseActivity {
     }
 
     private void setupSerieLinks() {
-        findViewById(R.id.tv_serie_name).setOnClickListener(v -> {
-            if (currentManga != null) {
-                Intent intent = new Intent(this, SerieActivity.class);
-                intent.putExtra("SERIE_NAME", currentManga.getTitre_serie());
-                intent.putExtra("NUMERO_TOME", currentManga.getNumero_tome());
-                intent.putExtra("EDITEUR_NAME", currentManga.getEditeur());
-                startActivity(intent);
-            }
-        });
+        // RENDRE TOUT LE BLOC SÉRIE CLIQUABLE
+        View layoutSerie = findViewById(R.id.layout_serie_link);
+        if (layoutSerie != null) {
+            layoutSerie.setOnClickListener(v -> {
+                if (currentManga != null) {
+                    Intent intent = new Intent(this, SerieActivity.class);
+                    intent.putExtra("SERIE_NAME", currentManga.getTitre_serie());
+                    intent.putExtra("EDITEUR_NAME", currentManga.getEditeur());
+                    startActivity(intent);
+                }
+            });
+        }
+
+        // RENDRE TOUT LE BLOC ÉDITION CLIQUABLE
+        View layoutEdition = findViewById(R.id.layout_edition_link);
+        if (layoutEdition != null) {
+            layoutEdition.setOnClickListener(v -> {
+                if (currentManga != null) {
+                    // Exemple d'action pour l'éditeur
+                    Toast.makeText(this, "Éditeur : " + currentManga.getEditeur(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void updateUI(MangaClass manga) {

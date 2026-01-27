@@ -130,7 +130,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@android:color/white"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
@@ -157,14 +159,18 @@
                     android:layout_height="wrap_content"
                     android:text=">"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="#CCCCCC"/>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_edition_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@android:color/white"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
@@ -191,7 +197,8 @@
                     android:layout_height="wrap_content"
                     android:text=">"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="#CCCCCC"/>
             </LinearLayout>
 
             <TextView
@@ -209,9 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="#333333"
-                android:ellipsize="end"
-                android:maxLines="5"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..." />
+                android:text="Résumé indisponible..." />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -227,29 +232,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="€  XX,XX€"
-                android:drawablePadding="8dp" />
+                android:text="Prix : --" />
 
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="📅  XX/XX/XXXX" />
+                android:text="Date : --" />
 
             <TextView
                 android:id="@+id/tv_isbn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Barcode  XXXXXXXXXXXXX" />
+                android:text="ISBN : --" />
 
             <TextView
                 android:id="@+id/tv_nb_pages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Nombre de page  XXXXXXXXXXXXX" />
+                android:layout_marginBottom="20dp"
+                android:text="Pages : --" />
 
         </LinearLayout>
     </ScrollView>
@@ -265,45 +270,11 @@
         android:gravity="center"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/btn_home"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_home_light" />
-
-        <ImageView
-            android:id="@+id/btn_collection"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_collection_light" />
-
-        <ImageView
-            android:id="@+id/btn_planning"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_calendar_light" />
-
-        <ImageView
-            android:id="@+id/btn_search"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_search_light" />
-
-        <ImageView
-            android:id="@+id/btn_maps"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_maps_light" />
+        <ImageView android:id="@+id/btn_home" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:padding="8dp" android:src="@drawable/ic_home_light" />
+        <ImageView android:id="@+id/btn_collection" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:padding="8dp" android:src="@drawable/ic_collection_light" />
+        <ImageView android:id="@+id/btn_planning" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:padding="8dp" android:src="@drawable/ic_calendar_light" />
+        <ImageView android:id="@+id/btn_search" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:padding="8dp" android:src="@drawable/ic_search_light" />
+        <ImageView android:id="@+id/btn_maps" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:padding="8dp" android:src="@drawable/ic_maps_light" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -40,32 +40,25 @@ public class CompleterFragment extends Fragment {
                 JSONObject serie = collection.getJSONObject(i);
                 String nomSerie = serie.optString("nom");
 
-                // --- JOINTURE DYNAMIQUE ---
                 int totalTheorique = 0;
-                String statut = "";
+                String editeurRef = "";
 
+                // Recherche dans le référentiel global
                 for (int j = 0; j < seriesRef.length(); j++) {
                     JSONObject ref = seriesRef.getJSONObject(j);
                     if (ref.optString("titre").equalsIgnoreCase(nomSerie)) {
                         JSONArray editions = ref.optJSONArray("editions");
                         if (editions != null && editions.length() > 0) {
-                            // On prend la première édition par défaut (image_e37e37.png)
-                            JSONObject firstEd = editions.getJSONObject(0);
-                            String rawNb = firstEd.optString("nb_tomes", "0");
-                            // Extraction du nombre (ex: "14 tomes" -> 14)
+                            JSONObject editObj = editions.getJSONObject(0);
+                            String rawNb = editObj.optString("nb_tomes", "0");
                             totalTheorique = Integer.parseInt(rawNb.replaceAll("[^0-9]", ""));
-                            statut = firstEd.optString("statut", "");
+                            editeurRef = editObj.optString("editeur", "");
                         }
                         break;
                     }
                 }
 
-                // Nettoyage et injection des infos fraîches
-                serie.remove("affichage_collection");
-                serie.put("nombre_tome_total", totalTheorique);
-                serie.put("statut", statut);
-
-                // Calcul des possédés
+                // Comptage des possédés
                 JSONArray mangas = serie.optJSONArray("mangas");
                 int nbPossedes = 0;
                 if (mangas != null) {
@@ -73,14 +66,20 @@ public class CompleterFragment extends Fragment {
                         if (mangas.getJSONObject(k).optBoolean("posséder", false)) nbPossedes++;
                     }
                 }
-                serie.put("nb_possedes", nbPossedes);
 
-                // Logique "À compléter"
+                // Condition : possède au moins 1 tome mais pas la totalité
                 if (nbPossedes > 0 && nbPossedes < totalTheorique) {
-                    int manquant = totalTheorique - nbPossedes;
-                    serie.put("nb_manquant", manquant);
-                    filteredList.add(serie);
-                    totalMissingTomes += manquant;
+                    JSONObject serieACompleter = new JSONObject(serie.toString());
+                    serieACompleter.put("nombre_tome_total", totalTheorique);
+                    serieACompleter.put("nb_possedes", nbPossedes);
+                    serieACompleter.put("nb_manquant", (totalTheorique - nbPossedes));
+                    serieACompleter.put("editeur_fr", editeurRef); // Pour la redirection Intent
+
+                    // On garde un flag pour l'affichage spécifique
+                    serieACompleter.put("is_completer_view", true);
+
+                    filteredList.add(serieACompleter);
+                    totalMissingTomes += (totalTheorique - nbPossedes);
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }

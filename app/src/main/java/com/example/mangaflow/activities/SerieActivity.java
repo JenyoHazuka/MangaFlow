@@ -113,9 +113,14 @@ public class SerieActivity extends BaseActivity {
 
             for (int i = 0; i < arrayMangas.length(); i++) {
                 JSONObject obj = arrayMangas.getJSONObject(i);
-                if (obj.optString("titre_serie").equalsIgnoreCase(serie) &&
-                        obj.optString("editeur_fr").equalsIgnoreCase(editeur)) {
 
+                boolean memeSerie = obj.optString("titre_serie").equalsIgnoreCase(serie);
+
+                // CORRECTION : Si l'éditeur est fourni, on filtre. Sinon, on prend tout de la série.
+                boolean memeEditeur = (editeur == null || editeur.isEmpty()) ||
+                        obj.optString("editeur_fr").equalsIgnoreCase(editeur);
+
+                if (memeSerie && memeEditeur) {
                     tomesDeLEdition.add(new MangaClass(
                             obj.optString("titre_serie"),
                             obj.optInt("numero_tome"),
