@@ -1,4 +1,4 @@
-package com.example.mangaflow.activities;
+package com.example.mangaflow.utils;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +24,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     // Méthode pour changer les données quand on change de catégorie
     public void updateData(List<String> newItems) {
+        // On met à jour la source de données complète ET la liste affichée
         this.listFull = new ArrayList<>(newItems);
         this.listDisplay = new ArrayList<>(newItems);
+
+        // TRÈS IMPORTANT : Dit au RecyclerView de se redessiner
         notifyDataSetChanged();
     }
 
@@ -56,6 +59,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.name.setText(listDisplay.get(position));
     }
+
+
 
     @Override
     public int getItemCount() {
