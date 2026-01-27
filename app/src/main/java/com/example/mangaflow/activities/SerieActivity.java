@@ -2,7 +2,6 @@ package com.example.mangaflow.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,17 +19,26 @@ public class SerieActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private List<MangaClass> tomesDeLEdition = new ArrayList<>();
-    private MangaAdapter adapter;
+    private String sName = "";
+    private String eName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_serie);
 
-        String sName = getIntent().getStringExtra("SERIE_NAME");
-        String eName = getIntent().getStringExtra("EDITEUR_NAME");
+        String jsonStr = getIntent().getStringExtra("DATA_JSON");
+        try {
+            if (jsonStr != null) {
+                JSONObject data = new JSONObject(jsonStr);
+                sName = data.getString("titre");
+            } else {
+                sName = getIntent().getStringExtra("SERIE_NAME");
+                eName = getIntent().getStringExtra("EDITEUR_NAME");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
 
-        if (sName == null) { finish(); return; }
+        if (sName == null || sName.isEmpty()) { finish(); return; }
 
         TextView tvTitle = findViewById(R.id.tv_serie_title_header);
         if (tvTitle != null) tvTitle.setText(sName);
@@ -38,107 +46,63 @@ public class SerieActivity extends BaseActivity {
         recyclerView = findViewById(R.id.rv_tomes_carrousel);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // --- NAVIGATION ---
         findViewById(R.id.btn_back_serie).setOnClickListener(v -> finish());
-        findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
-        findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
-        findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
-        findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
-        findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
-
         loadTomes(sName, eName);
     }
 
     private void loadTomes(String serie, String editeur) {
         try {
-            // PARTIE 1 : RÉCUPÉRATION DEPUIS SERIES.JSON
-            InputStream isSeries = getResources().openRawResource(R.raw.series);
-            byte[] bufferS = new byte[isSeries.available()];
-            isSeries.read(bufferS);
-            isSeries.close();
-
+            // Lecture Series.json pour les infos header
+            InputStream isS = getResources().openRawResource(R.raw.series);
+            byte[] bufferS = new byte[isS.available()];
+            isS.read(bufferS);
+            isS.close();
             JSONArray arraySeries = new JSONArray(new String(bufferS, StandardCharsets.UTF_8));
 
             for (int i = 0; i < arraySeries.length(); i++) {
                 JSONObject obj = arraySeries.getJSONObject(i);
                 if (obj.optString("titre").equalsIgnoreCase(serie)) {
-
-                    // Extraction de l'auteur et mise en place de la redirection
-                    JSONArray auteursJ = obj.optJSONArray("auteurs");
-                    if (auteursJ != null && auteursJ.length() > 0) {
-                        JSONObject auteurObj = auteursJ.getJSONObject(0);
-                        String nomAuteur = auteurObj.optString("nom", "Auteur inconnu");
-
-                        TextView tvAuteur = findViewById(R.id.tv_serie_auteur);
-                        if (tvAuteur != null) tvAuteur.setText(nomAuteur);
-
-                        // MODIFICATION : REDIRECTION BASÉE SUR LE CONTENU DU CHAMP
-                        View layoutAuteur = findViewById(R.id.layout_auteur_cliquable);
-                        if (layoutAuteur != null && tvAuteur != null) {
-                            layoutAuteur.setOnClickListener(v -> {
-                                // On récupère le texte directement du TextView au moment du clic
-                                String nomAEnvoyer = tvAuteur.getText().toString().trim();
-
-                                Intent intent = new Intent(SerieActivity.this, AuteurActivity.class);
-                                intent.putExtra("nom_auteur", nomAEnvoyer);
-                                startActivity(intent);
-                            });
-                        }
-                    }
-
-                    // Extraction nb_tomes et statut
-                    JSONArray editionsJ = obj.optJSONArray("editions");
-                    if (editionsJ != null && editionsJ.length() > 0) {
-                        JSONObject editObj = editionsJ.getJSONObject(0);
-                        String nb = editObj.optString("nb_tomes", "X");
-                        String statut = editObj.optString("statut", "en cours");
-
-                        TextView tvStatus = findViewById(R.id.tv_serie_status_info);
-                        if (tvStatus != null) {
-                            tvStatus.setText(nb + " parus - Édition " + statut);
-                        }
+                    // Maj Auteur
+                    JSONArray auteurs = obj.optJSONArray("auteurs");
+                    if (auteurs != null && auteurs.length() > 0) {
+                        String nomAut = auteurs.getJSONObject(0).optString("nom");
+                        ((TextView)findViewById(R.id.tv_serie_auteur)).setText(nomAut);
+                        findViewById(R.id.layout_auteur_cliquable).setOnClickListener(v -> {
+                            Intent intent = new Intent(this, AuteurActivity.class);
+                            intent.putExtra("nom_auteur", nomAut);
+                            startActivity(intent);
+                        });
                     }
                     break;
                 }
             }
 
-            // PARTIE 2 : RÉCUPÉRATION DES TOMES DEPUIS MANGAS.JSON
-            InputStream isMangas = getResources().openRawResource(R.raw.mangas);
-            byte[] bufferM = new byte[isMangas.available()];
-            isMangas.read(bufferM);
-            isMangas.close();
-
+            // Lecture Mangas.json pour les tomes
+            InputStream isM = getResources().openRawResource(R.raw.mangas);
+            byte[] bufferM = new byte[isM.available()];
+            isM.read(bufferM);
+            isM.close();
             JSONArray arrayMangas = new JSONArray(new String(bufferM, StandardCharsets.UTF_8));
+
             tomesDeLEdition.clear();
-
             for (int i = 0; i < arrayMangas.length(); i++) {
-                JSONObject obj = arrayMangas.getJSONObject(i);
-
-                boolean memeSerie = obj.optString("titre_serie").equalsIgnoreCase(serie);
-
-                // CORRECTION : Si l'éditeur est fourni, on filtre. Sinon, on prend tout de la série.
-                boolean memeEditeur = (editeur == null || editeur.isEmpty()) ||
-                        obj.optString("editeur_fr").equalsIgnoreCase(editeur);
-
-                if (memeSerie && memeEditeur) {
-                    tomesDeLEdition.add(new MangaClass(
-                            obj.optString("titre_serie"),
-                            obj.optInt("numero_tome"),
-                            obj.optString("image_url"),
-                            obj.optString("edition"),
-                            obj.optString("ean"),
-                            obj.optString("editeur_fr"),
-                            "", 0.0f, 0, null, null, "",
-                            false, false, false
-                    ));
+                JSONObject m = arrayMangas.getJSONObject(i);
+                if (m.optString("titre_serie").equalsIgnoreCase(serie)) {
+                    if (editeur == null || m.optString("editeur_fr").equalsIgnoreCase(editeur)) {
+                        tomesDeLEdition.add(
+                                new MangaClass(m.optString("titre_serie"),
+                                        m.optInt("numero_tome"),
+                                        m.optString("image_url"),
+                                        m.optString("edition"),
+                                        m.optString("ean"),
+                                        m.optString("editeur_fr"),
+                                        "", 0.00f, 0, null,
+                                        null, "", false, false,
+                                        false));
+                    }
                 }
             }
-
-            adapter = new MangaAdapter(tomesDeLEdition, R.layout.manga_item_carrousel);
-            recyclerView.setAdapter(adapter);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            recyclerView.setAdapter(new MangaAdapter(tomesDeLEdition, R.layout.manga_item_carrousel));
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }

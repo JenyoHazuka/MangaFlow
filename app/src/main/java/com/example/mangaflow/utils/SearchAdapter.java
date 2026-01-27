@@ -6,43 +6,45 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.mangaflow.R;
-
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder> {
 
-    private List<String> listFull; // Liste complète
-    private List<String> listDisplay; // Liste affichée (filtrée)
+    private List<JSONObject> listFull;
+    private List<JSONObject> listDisplay;
+    private OnItemClickListener listener;
+    private String fieldName;
 
-    public SearchAdapter(List<String> items) {
-        this.listFull = new ArrayList<>(items);
-        this.listDisplay = new ArrayList<>(items);
+    public interface OnItemClickListener {
+        void onItemClick(JSONObject data);
     }
 
-    // Méthode pour changer les données quand on change de catégorie
-    public void updateData(List<String> newItems) {
-        // On met à jour la source de données complète ET la liste affichée
+    public SearchAdapter(List<JSONObject> items, String fieldName, OnItemClickListener listener) {
+        this.listFull = new ArrayList<>(items);
+        this.listDisplay = new ArrayList<>(items);
+        this.fieldName = fieldName;
+        this.listener = listener;
+    }
+
+    public void updateData(List<JSONObject> newItems, String newFieldName) {
         this.listFull = new ArrayList<>(newItems);
         this.listDisplay = new ArrayList<>(newItems);
-
-        // TRÈS IMPORTANT : Dit au RecyclerView de se redessiner
+        this.fieldName = newFieldName;
         notifyDataSetChanged();
     }
 
     public void filter(String text) {
         listDisplay.clear();
-        if (text.isEmpty()) {
-            listDisplay.addAll(listFull);
-        } else {
-            String query = text.toLowerCase().trim();
-            for (String item : listFull) {
-                if (item.toLowerCase().contains(query)) {
-                    listDisplay.add(item);
+        String query = text.toLowerCase().trim();
+        for (JSONObject obj : listFull) {
+            try {
+                if (query.isEmpty() || obj.getString(fieldName).toLowerCase().contains(query)) {
+                    listDisplay.add(obj);
                 }
-            }
+            } catch (Exception e) { e.printStackTrace(); }
         }
         notifyDataSetChanged();
     }
@@ -50,22 +52,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Utilise item_auteur.xml créé précédemment
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_auteur, parent, false);
         return new MyViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.name.setText(listDisplay.get(position));
+        JSONObject data = listDisplay.get(position);
+        try {
+            holder.name.setText(data.getString(fieldName));
+            holder.itemView.setOnClickListener(v -> listener.onItemClick(data));
+        } catch (Exception e) { e.printStackTrace(); }
     }
-
-
 
     @Override
-    public int getItemCount() {
-        return listDisplay.size();
-    }
+    public int getItemCount() { return listDisplay.size(); }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name;
