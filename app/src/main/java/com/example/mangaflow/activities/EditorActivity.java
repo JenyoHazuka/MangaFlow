@@ -17,7 +17,7 @@ import com.example.mangaflow.utils.MangaClass;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private List<MangaClass> mangaList;

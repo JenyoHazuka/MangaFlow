@@ -15,7 +15,7 @@ import com.example.mangaflow.R;
 import java.util.Arrays;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity {
 
     private SearchAdapter adapter;
     private Button btnAuteurs, btnEditeurs, btnSeries;
