@@ -65,6 +65,19 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
                 }
             } else if (serie.has("affichage_souhaiter")) {
                 holder.tvStatus.setText(serie.optInt("nombre_tome_total") + " tomes");
+            } else if (serie.has("nb_a_lire")) {
+                // AFFICHAGE POUR L'ONGLET "À LIRE"
+                int aLire = serie.optInt("nb_a_lire", 0);
+
+                // Gestion du singulier/pluriel pour plus de propreté
+                if (aLire > 1) {
+                    holder.tvStatus.setText(aLire + " tomes à lire");
+                } else {
+                    holder.tvStatus.setText(aLire + " tome à lire");
+                }
+
+                // On s'assure que la couleur est neutre
+                holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#888888"));
             }
 
             // Image
