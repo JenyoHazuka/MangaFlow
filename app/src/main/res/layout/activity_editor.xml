@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#F5F5F5">
 
-    <TextView
-        android:id="@+id/header_map"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="#007FFF"
-        android:text="Map"
-        android:textColor="#FFFFFF"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:gravity="center" />
+        android:padding="16dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/header_map"
-        android:layout_above="@+id/bottom_nav"> <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back_arrow"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <EditText
-            android:id="@+id/map_search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/search_bar_bg"
-            android:hint="search destination"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:drawableEnd="@android:drawable/ic_menu_search"
-            android:elevation="4dp"
-            android:textSize="16sp"
-            android:inputType="text"
-            android:imeOptions="actionSearch" /> </FrameLayout>
+        <TextView
+            android:id="@+id/editor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Nom editeur"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_mangas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#CCCCCC"
+        android:dividerHeight="1dp" />
 
     <LinearLayout
         android:id="@+id/bottom_nav"
@@ -93,4 +90,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
