@@ -15,6 +15,7 @@ public class MangaClass {
     private List<String> auteurs;
     private List<String> genres_theme;
     private String resume;
+    private String titre;
 
     // Constructeur
     public MangaClass(String titre_serie, Integer numero_tome, String image_url, String edition, Integer isbn,
@@ -32,6 +33,15 @@ public class MangaClass {
         this.auteurs = auteurs;
         this.genres_theme = genres_theme;
         this.resume = resume;
+    }
+
+    // Ajoute ce constructeur vide
+    public MangaClass() {
+        // Ce constructeur ne fait rien, mais il permet de créer l'objet
+        // avant d'utiliser les "setters" comme setTitre
+    }
+    public void setTitre(String titre) {
+        this.titre = titre; // Remplace 'this.titre' par le nom de ta variable interne
     }
 
     public String getTitre_serie() {
