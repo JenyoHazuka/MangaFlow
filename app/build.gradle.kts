@@ -26,6 +26,13 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        applicationVariants.all {
+            outputs.all {
+                val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+                output.outputFileName = "MangaFlow-v${versionName}.apk"
+            }
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

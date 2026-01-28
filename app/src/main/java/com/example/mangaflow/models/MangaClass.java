@@ -1,4 +1,4 @@
-package com.example.mangaflow.utils;
+package com.example.mangaflow.models;
 
 import java.util.List;
 

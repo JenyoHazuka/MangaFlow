@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.mangaflow.R;
-import com.example.mangaflow.utils.MangaClass;
+import com.example.mangaflow.models.MangaClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -295,7 +295,7 @@ public class MangaActivity extends BaseActivity {
     }
 
     private void setupSerieLinks() {
-        // RENDRE TOUT LE BLOC SÉRIE CLIQUABLE
+        // --- BLOC SÉRIE ---
         View layoutSerie = findViewById(R.id.layout_serie_link);
         if (layoutSerie != null) {
             layoutSerie.setOnClickListener(v -> {
@@ -308,16 +308,45 @@ public class MangaActivity extends BaseActivity {
             });
         }
 
-        // RENDRE TOUT LE BLOC ÉDITION CLIQUABLE
-        View layoutEdition = findViewById(R.id.layout_edition_link);
+        // --- BLOC ÉDITEUR (Modification ici) ---
+        View layoutEdition = findViewById(R.id.layout_editeur_link);
         if (layoutEdition != null) {
             layoutEdition.setOnClickListener(v -> {
                 if (currentManga != null) {
-                    // Exemple d'action pour l'éditeur
-                    Toast.makeText(this, "Éditeur : " + currentManga.getEditeur(), Toast.LENGTH_SHORT).show();
+                    String jsonEditeur = getEditeurData(currentManga.getEditeur());
+                    if (jsonEditeur != null) {
+                        Intent intent = new Intent(this, EditorActivity.class);
+                        // On envoie le JSON complet pour que EditorActivity puisse extraire
+                        // les listes (Mangas, Artbooks, etc.)
+                        intent.putExtra("DATA_JSON", jsonEditeur);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Données éditeur introuvables", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
+    }
+
+    // Fonction utilitaire pour chercher l'éditeur dans editeurs.json
+    private String getEditeurData(String nomEditeur) {
+        try {
+            InputStream is = getResources().openRawResource(R.raw.editeurs);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            JSONArray editeursArray = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
+
+            for (int i = 0; i < editeursArray.length(); i++) {
+                JSONObject editeur = editeursArray.getJSONObject(i);
+                // On compare le nom du manga avec le champ "nom" du JSON éditeur
+                if (editeur.optString("nom").equalsIgnoreCase(nomEditeur)) {
+                    return editeur.toString();
+                }
+            }
+        } catch (Exception e) {
+            Log.e("MangaFlow", "Erreur lors de la lecture de editeurs.json", e);
+        }
+        return null;
     }
 
     private void updateUI(MangaClass manga) {
@@ -325,7 +354,7 @@ public class MangaActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_info_title)).setText(manga.getTitre_serie());
         ((TextView) findViewById(R.id.tv_info_tome)).setText("Tome " + manga.getNumero_tome());
         ((TextView) findViewById(R.id.tv_serie_name)).setText(manga.getTitre_serie());
-        ((TextView) findViewById(R.id.tv_edition_name)).setText(manga.getEdition() + " - " + manga.getEditeur());
+        ((TextView) findViewById(R.id.tv_editeur_name)).setText(manga.getEdition() + " - " + manga.getEditeur());
         ((TextView) findViewById(R.id.tv_manga_summary)).setText(manga.getResume());
 
         // FIX PRIX ET PAGES

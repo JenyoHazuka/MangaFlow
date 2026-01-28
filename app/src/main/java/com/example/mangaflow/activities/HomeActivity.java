@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mangaflow.utils.MangaAdapter;
-import com.example.mangaflow.utils.MangaClass;
+import com.example.mangaflow.models.MangaClass;
 import com.example.mangaflow.R;
 
 import org.json.JSONArray;

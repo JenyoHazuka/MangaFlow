@@ -164,7 +164,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_edition_link"
+                android:id="@+id/layout_editeur_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -180,7 +180,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_edition_name"
+                        android:id="@+id/tv_editeur_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nom de l'édition - Editeur"

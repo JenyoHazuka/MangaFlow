@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangaflow.R;
 import com.example.mangaflow.utils.MangaAdapter;
-import com.example.mangaflow.utils.MangaClass;
+import com.example.mangaflow.models.MangaClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.InputStream;

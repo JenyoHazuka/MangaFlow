@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.mangaflow.R;
 import com.example.mangaflow.activities.MangaActivity;
+import com.example.mangaflow.models.MangaClass;
+
 import java.util.List;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
