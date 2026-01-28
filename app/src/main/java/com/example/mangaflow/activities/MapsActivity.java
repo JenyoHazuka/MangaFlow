@@ -77,10 +77,7 @@ public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
         findViewById(R.id.btn_search).setOnClickListener(v -> {
             startActivity(new Intent(this, SearchActivity.class));
         });
-
-        findViewById(R.id.btn_maps).setOnClickListener(v -> {
-            startActivity(new Intent(this, MapsActivity.class));
-        });
+        
     }
 
     @Override
