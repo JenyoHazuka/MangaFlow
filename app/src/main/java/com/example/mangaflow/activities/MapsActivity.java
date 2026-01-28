@@ -24,13 +24,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Activité gérant l'affichage de la carte et la recherche de magasins de mangas/librairies.
+ * Utilise Google Maps SDK et Google Places API.
+ */
 public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private RequestQueue requestQueue;
+    private RequestQueue requestQueue; // File d'attente pour les requêtes réseau Volley
     private EditText searchInput;
 
-    // Ta clé API configurée dans la console Google Cloud
+    // Clé API Google Cloud (nécessaire pour authentifier les requêtes Maps et Places)
     private final String API_KEY = "AIzaSyAR8e21t0_6aFiGX_J3aNFJ8yzIVoZzHCo";
 
     @Override
@@ -38,14 +42,13 @@ public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // 1. Initialisation de Volley
+        // 1. Initialisation de Volley pour effectuer des appels HTTP vers l'API Google Places
         requestQueue = Volley.newRequestQueue(this);
 
-        // 2. Configuration de la barre de recherche
-        // L'ID doit correspondre à celui de ton fichier activity_map.xml
+        // 2. Configuration de la barre de recherche (EditText)
         searchInput = findViewById(R.id.map_search_bar);
 
-        // Détection de la touche "Entrée" ou "Recherche" sur le clavier
+        // Détection de la validation du clavier (touche loupe ou "Entrée")
         searchInput.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 lancerRechercheManuelle();
@@ -54,14 +57,14 @@ public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
             return false;
         });
 
-        // 3. Chargement de la carte
+        // 3. Chargement asynchrone de la carte Google Maps
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION : Listeners pour la barre de menu inférieure ---
         findViewById(R.id.btn_home).setOnClickListener(v -> {
             startActivity(new Intent(this, HomeActivity.class));
         });
@@ -77,59 +80,75 @@ public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
         findViewById(R.id.btn_search).setOnClickListener(v -> {
             startActivity(new Intent(this, SearchActivity.class));
         });
-        
+
     }
 
+    /**
+     * Méthode appelée lorsque la carte est prête à être utilisée.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Position initiale sur Valenciennes au démarrage
+        // Positionnement par défaut sur Valenciennes avec un niveau de zoom de 13
         LatLng valenciennes = new LatLng(50.357, 3.523);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(valenciennes, 13f));
 
-        // AUTOMATISATION : Recherche par défaut quand on bouge la carte
+        // Écouteur qui détecte quand la carte arrête de bouger (scroll ou zoom fini)
         mMap.setOnCameraIdleListener(() -> {
             String texteRecherche = searchInput.getText().toString();
 
-            // Si la barre est vide, on cherche les mangas/librairies par défaut
+            // Recherche automatique des enseignes connues si la barre est vide
             if (texteRecherche.isEmpty()) {
                 chercherMagasins(mMap.getCameraPosition().target, "fnac|cultura|librairie");
             } else {
-                // Sinon on garde la recherche actuelle de l'utilisateur
+                // Sinon, recherche basée sur le mot-clé saisi par l'utilisateur
                 chercherMagasins(mMap.getCameraPosition().target, texteRecherche);
             }
         });
     }
 
+    /**
+     * Nettoie la carte et lance une recherche basée sur la saisie de l'utilisateur.
+     */
     private void lancerRechercheManuelle() {
         String query = searchInput.getText().toString();
         if (!query.isEmpty()) {
-            // On efface les anciens marqueurs pour ne voir que les nouveaux résultats
+            // Supprime les marqueurs existants pour ne pas encombrer la carte
             mMap.clear();
-            // On lance la recherche autour du centre actuel de la carte
+            // Recherche autour du point central actuel de la vue
             chercherMagasins(mMap.getCameraPosition().target, query);
         }
     }
 
+    /**
+     * Effectue une requête HTTP vers Google Places API pour trouver des lieux.
+     * @param position Coordonnées GPS du centre de la recherche
+     * @param motCle Terme de recherche (ex: "librairie")
+     */
     private void chercherMagasins(LatLng position, String motCle) {
-        // Utilisation de l'API Places Nearby Search activée précédemment
+        // Construction de l'URL pour l'API Nearby Search (rayon de 5km)
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "location=" + position.latitude + "," + position.longitude +
                 "&radius=5000" +
                 "&keyword=" + motCle +
                 "&key=" + API_KEY;
 
+        // Création de la requête JSON
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
+                        // Extraction des résultats du JSON de réponse
                         JSONArray results = response.getJSONArray("results");
                         for (int i = 0; i < results.length(); i++) {
                             JSONObject place = results.getJSONObject(i);
                             String name = place.getString("name");
+
+                            // Récupération des coordonnées GPS du lieu trouvé
                             JSONObject loc = place.getJSONObject("geometry").getJSONObject("location");
                             LatLng poiLatLng = new LatLng(loc.getDouble("lat"), loc.getDouble("lng"));
 
+                            // Ajout d'un marqueur sur la carte pour chaque magasin
                             mMap.addMarker(new MarkerOptions()
                                     .position(poiLatLng)
                                     .title(name));
@@ -141,6 +160,7 @@ public class MapsActivity extends BaseFragment implements OnMapReadyCallback {
                 error -> Log.e("MapsActivity", "Erreur API : " + error.toString())
         );
 
+        // Ajout de la requête à la file d'attente Volley pour exécution
         requestQueue.add(request);
     }
 }

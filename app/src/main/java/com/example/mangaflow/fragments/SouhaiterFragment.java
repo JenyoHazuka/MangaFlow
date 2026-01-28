@@ -16,29 +16,36 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment gérant la liste d'envies (Wishlist).
+ * Affiche les séries suivies pour lesquelles l'utilisateur ne possède encore aucun tome.
+ */
 public class SouhaiterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // 1. Initialisation de l'interface
         View view = inflater.inflate(R.layout.fragment_souhaiter, container, false);
 
+        // 2. Récupération des données partagées par CollectionActivity
         CollectionActivity activity = (CollectionActivity) getActivity();
         if (activity == null) return view;
 
-        JSONArray collection = activity.getCollection();
-        JSONArray seriesRef = activity.getSeriesReference();
+        JSONArray collection = activity.getCollection(); // Données de l'utilisateur
+        JSONArray seriesRef = activity.getSeriesReference(); // Référentiel global
 
         TextView tvSouhaits = view.findViewById(R.id.tv_souhaiter_title);
         RecyclerView rv = view.findViewById(R.id.rv_souhaiter);
 
-        int nbTomesSouhaiter = 0;
+        int nbTomesSouhaiter = 0; // Compteur global des tomes attendus
         List<JSONObject> filteredList = new ArrayList<>();
 
         try {
+            // 3. LOGIQUE DE FILTRAGE ET DE JOINTURE
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
                 String nomSerie = serie.optString("nom");
 
-                // 1. Jointure pour récupérer le total et l'éditeur
+                // Étape A : On récupère les infos globales (Total et Éditeur) pour l'affichage
                 int totalTheorique = 0;
                 String editeurRef = "";
                 for (int j = 0; j < seriesRef.length(); j++) {
@@ -55,7 +62,7 @@ public class SouhaiterFragment extends Fragment {
                     }
                 }
 
-                // 2. Vérification : On cherche si des tomes sont marqués "souhaiter"
+                // Étape B : On vérifie l'état de la série pour l'utilisateur
                 JSONArray mangas = serie.optJSONArray("mangas");
                 int countSouhaitsInSerie = 0;
                 boolean possedeAuMoinsUn = false;
@@ -63,15 +70,20 @@ public class SouhaiterFragment extends Fragment {
                 if (mangas != null) {
                     for (int k = 0; k < mangas.length(); k++) {
                         JSONObject m = mangas.getJSONObject(k);
+                        // On compte les tomes marqués "souhaiter"
                         if (m.optBoolean("souhaiter", false)) countSouhaitsInSerie++;
+                        // On vérifie si l'utilisateur possède déjà un tome de cette série
                         if (m.optBoolean("posséder", false)) possedeAuMoinsUn = true;
                     }
                 }
 
-                // 3. Logique d'affichage : Séries suivies mais non encore commencées (0 possédés)
+                // Étape C : CONDITION D'AFFICHAGE
+                // La série apparaît si elle contient des souhaits MAIS aucun tome possédé
                 if (countSouhaitsInSerie > 0 && !possedeAuMoinsUn) {
                     JSONObject serieSouhait = new JSONObject(serie.toString());
-                    serieSouhait.put("affichage_souhaiter", true);
+
+                    // On injecte les données calculées pour le SerieAdapter
+                    serieSouhait.put("affichage_souhaiter", true); // Flag pour le mode visuel "Wishlist"
                     serieSouhait.put("nombre_tome_total", totalTheorique);
                     serieSouhait.put("editeur_fr", editeurRef);
 
@@ -81,13 +93,14 @@ public class SouhaiterFragment extends Fragment {
             }
         } catch (Exception e) { e.printStackTrace(); }
 
-        // MISE À JOUR DE L'EN-TÊTE
+        // 4. MISE À JOUR DYNAMIQUE DU TITRE (Gestion du singulier/pluriel)
         if (filteredList.size() > 1) {
             tvSouhaits.setText(filteredList.size() + " Séries Souhaitées");
         } else {
             tvSouhaits.setText(filteredList.size() + " Série Souhaitée");
         }
 
+        // 5. Configuration du RecyclerView
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(new SerieAdapter(filteredList));
 

@@ -1,6 +1,5 @@
 package com.example.mangaflow.utils;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 
+/**
+ * Adaptateur polyvalent pour l'affichage des séries dans la bibliothèque.
+ * Gère dynamiquement les barres de progression, les badges "Fini" et les compteurs de lecture.
+ */
 public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> {
     private List<JSONObject> serieList;
 
@@ -24,6 +27,7 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflation du layout unique utilisé pour tous les modes de la bibliothèque
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.manga_item_collection, parent, false);
         return new ViewHolder(view);
     }
@@ -35,54 +39,59 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
             String nomSerie = serie.optString("nom", "Série");
             holder.tvTitle.setText(nomSerie);
 
-            // Clic sur l'item
+            // --- NAVIGATION ---
+            // Envoi vers la page détaillée de la série au clic
             holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), SerieActivity.class);
+                android.content.Intent intent = new android.content.Intent(v.getContext(), SerieActivity.class);
                 intent.putExtra("SERIE_NAME", nomSerie);
                 intent.putExtra("EDITEUR_NAME", serie.optString("editeur_fr", ""));
                 v.getContext().startActivity(intent);
             });
 
-            // Reset des visibilités
+            // --- RÉINITIALISATION DE L'ÉTAT ---
+            // Important car le RecyclerView réutilise les vues (évite les bugs d'affichage au scroll)
             holder.progressBar.setVisibility(View.GONE);
             holder.tvLabelFini.setVisibility(View.GONE);
 
+            // --- LOGIQUE D'AFFICHAGE CONDITIONNELLE ---
+
+            // Cas 1 : Mode Collection ou Séries à compléter
             if (serie.has("affichage_collection") || serie.has("is_completer_view")) {
                 int total = serie.optInt("nombre_tome_total", 0);
                 int possedes = serie.optInt("nb_possedes", 0);
 
                 if (possedes >= total && total > 0) {
-                    // AFFICHAGE FINI
+                    // Sous-cas : La série est complète (Possédé = Total)
                     holder.tvStatus.setText(total + " tomes");
-                    holder.tvLabelFini.setVisibility(View.VISIBLE);
+                    holder.tvLabelFini.setVisibility(View.VISIBLE); // Affiche le badge "Fini"
                 } else {
-                    // AFFICHAGE PROGRESSION
+                    // Sous-cas : Série en cours d'acquisition
                     holder.tvStatus.setText(possedes + " / " + total + " tomes");
                     holder.progressBar.setVisibility(View.VISIBLE);
                     holder.progressBar.setMax(total);
                     holder.progressBar.setProgress(possedes);
                 }
-            } else if (serie.has("affichage_souhaiter")) {
+            }
+            // Cas 2 : Mode Wishlist (Souhaits)
+            else if (serie.has("affichage_souhaiter")) {
                 holder.tvStatus.setText(serie.optInt("nombre_tome_total") + " tomes");
-            } else if (serie.has("nb_a_lire")) {
-                // AFFICHAGE POUR L'ONGLET "À LIRE"
+            }
+            // Cas 3 : Mode Pile à lire (Calculé dans un fragment dédié)
+            else if (serie.has("nb_a_lire")) {
                 int aLire = serie.optInt("nb_a_lire", 0);
-
-                // Gestion du singulier/pluriel pour plus de propreté
-                if (aLire > 1) {
-                    holder.tvStatus.setText(aLire + " tomes à lire");
-                } else {
-                    holder.tvStatus.setText(aLire + " tome à lire");
-                }
-
-                // On s'assure que la couleur est neutre
+                holder.tvStatus.setText(aLire > 1 ? aLire + " tomes à lire" : aLire + " tome à lire");
                 holder.tvStatus.setTextColor(android.graphics.Color.parseColor("#888888"));
             }
 
-            // Image
+            // --- AFFICHAGE DE L'IMAGE ---
+            // On récupère la jaquette du premier tome disponible dans la liste "mangas"
             JSONArray mangas = serie.optJSONArray("mangas");
             String imageUrl = (mangas != null && mangas.length() > 0) ? mangas.getJSONObject(0).optString("jaquette") : "";
-            Glide.with(holder.itemView.getContext()).load(imageUrl).placeholder(R.drawable.placeholder_cover).into(holder.ivCover);
+
+            Glide.with(holder.itemView.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder_cover)
+                    .into(holder.ivCover);
 
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -90,6 +99,9 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
     @Override
     public int getItemCount() { return serieList.size(); }
 
+    /**
+     * ViewHolder : Fait le lien entre les variables Java et les composants du XML.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivCover;
         TextView tvTitle, tvStatus, tvLabelFini;

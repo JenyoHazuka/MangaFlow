@@ -28,6 +28,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Activité d'accueil (Dashboard).
+ * Affiche les sorties récentes et sert de pivot central pour la navigation.
+ */
 public class HomeActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
@@ -39,77 +43,76 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Configuration de la grille : 2 colonnes pour les couvertures de mangas
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // 1. Charger la liste depuis le JSON
+        // 1. VÉRIFICATION RÉSEAU : On ne charge les données que si l'appareil est connecté
         if (isNetworkAvailable()) {
+            // Initialisation de la liste des données via le fichier JSON local
             mangaList = loadMangasFromJSON();
 
-            // 2. Créer l'adapter AVEC la liste remplie
+            // Initialisation de l'adapter (le pont entre les données et la vue)
             adapter = new MangaAdapter(mangaList, R.layout.manga_item);
 
-            // 3. Lier l'adapter au RecyclerView
+            // Liaison de l'adapter au RecyclerView
             recyclerView.setAdapter(adapter);
 
-            // 4. Forcer l'affichage
+            // Notification pour forcer le rafraîchissement visuel
             adapter.notifyDataSetChanged();
         } else {
-            // Afficher un message d'erreur si pas de Wi-Fi/4G
+            // Feedback utilisateur en cas d'absence de réseau
             Toast.makeText(this, "Pas de connexion internet", Toast.LENGTH_LONG).show();
         };
 
-        // Liaison des boutons XML vers le code Java
+        // LIAISON UI : Récupération des icônes de la barre de navigation
         ImageView btnPlanning = findViewById(R.id.btn_planning);
         ImageView btnCollection = findViewById(R.id.btn_collection);
         ImageView btnSearch = findViewById(R.id.btn_search);
         ImageView btnMaps = findViewById(R.id.btn_maps);
         ImageView btnAccount = findViewById(R.id.btn_account);
 
-        // Configuration des clics
-
-        // Vérification de la connexion
+        // GESTION DU COMPTE (Login / Logout)
         btnAccount.setOnClickListener(v -> {
+            // On vérifie si un utilisateur est déjà en session
             SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
             String userEmail = pref.getString("user_email", null);
 
             if (userEmail != null) {
-                // L'utilisateur est connecté -> Page de déconnexion
-                // Tu peux créer une nouvelle activité "LogoutActivity"
+                // Connecté -> Direction la page de déconnexion/profil
                 Intent intent = new Intent(HomeActivity.this, LogoutActivity.class);
                 startActivity(intent);
             } else {
-                // L'utilisateur est déconnecté -> Page de Login
+                // Déconnecté -> Direction la page de connexion
                 Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
 
-        // Affichage des dernières sorties
+        // 2. FILTRAGE : Chargement spécifique des sorties déjà parues (Home)
         chargerMangasHome();
 
-        // Vers le Planning
+        // --- NAVIGATION VERS LES AUTRES MODULES AVEC TRANSITIONS ---
+
         btnPlanning.setOnClickListener(v -> {
             Intent PlanningIntent = new Intent(HomeActivity.this, PlanningActivity.class);
             startActivity(PlanningIntent);
+            // Animation personnalisée : glissement de gauche à droite
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
-        // Vers la Collection
         btnCollection.setOnClickListener(v -> {
             Intent CollectionIntent = new Intent(HomeActivity.this, CollectionActivity.class);
             startActivity(CollectionIntent);
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
-        // Vers la Recherche
         btnSearch.setOnClickListener(v -> {
             Intent SearchIntent = new Intent(HomeActivity.this, SearchActivity.class);
             startActivity(SearchIntent);
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
-        // Vers la Carte
         btnMaps.setOnClickListener(v -> {
             Intent MapsIntent = new Intent(HomeActivity.this, MapsActivity.class);
             startActivity(MapsIntent);
@@ -117,15 +120,22 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Vérifie si le Wi-Fi ou les données mobiles sont activés.
+     */
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    /**
+     * Parse le fichier raw/mangas.json pour transformer le texte brut en objets Java.
+     */
     private List<MangaClass> loadMangasFromJSON() {
         List<MangaClass> list = new ArrayList<>();
         try {
-            // Lecture depuis le dossier 'raw'
+            // Lecture physique du fichier binaire
             InputStream is = getResources().openRawResource(R.raw.mangas);
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -133,18 +143,17 @@ public class HomeActivity extends BaseActivity {
             is.close();
             String json = new String(buffer, StandardCharsets.UTF_8);
 
-            // Parsing du JSON
+            // Conversion de la chaîne en tableau JSON
             JSONArray jsonArray = new JSONArray(json);
-            int numTome = 0;
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                // Extraction sécurisée
+                // Mapping sécurisé (utilise des valeurs par défaut si une clé manque)
                 String titre = obj.optString("titre_serie", "Inconnu");
-                int tome = obj.optInt("numero_tome", 0); // optInt gère String ou Int automatiquement
+                int tome = obj.optInt("numero_tome", 0);
                 String img = obj.optString("image_url", "");
                 String edit = obj.optString("edition", "");
-                String isbn = obj.optString("ean", "0000000000000"); // Ton JSON semble utiliser "ean" au lieu de "isbn"
+                String isbn = obj.optString("ean", "0000000000000"); // Identifiant unique
                 String editeur = obj.optString("editeur_fr", "");
                 String date = obj.optString("date_parution", "");
                 String resume = obj.optString("resume", "");
@@ -152,7 +161,7 @@ public class HomeActivity extends BaseActivity {
                 Boolean suivi = obj.optBoolean("suivi", false);
                 Boolean possede = obj.optBoolean("possede", false);
 
-                // On crée l'objet avec les données récupérées
+                // Création du modèle MangaClass
                 list.add(new MangaClass(
                         titre, tome, img, edit, isbn, editeur, date,
                         0.0f, 0, null, null, resume,
@@ -165,6 +174,9 @@ public class HomeActivity extends BaseActivity {
         return list;
     }
 
+    /**
+     * Filtre les données pour n'afficher que les 50 derniers mangas déjà sortis en librairie.
+     */
     private void chargerMangasHome() {
         try {
             InputStream is = getResources().openRawResource(R.raw.mangas);
@@ -175,22 +187,22 @@ public class HomeActivity extends BaseActivity {
             JSONArray array = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
             List<MangaClass> tempListe = new ArrayList<>();
 
-            // Format de date correspondant à ton JSON : dd/MM/yyyy
+            // Préparation du comparateur de date
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
             Date aujourdhui = new Date();
 
-            // On parcourt du BAS vers le HAUT (i = length - 1 down to 0)
+            // PARCOURS INVERSÉ : On commence par la fin du JSON (souvent les sorties les plus récentes)
             for (int i = array.length() - 1; i >= 0; i--) {
-                // Arrêt si on a déjà 50 mangas
+                // Limitation arbitraire pour éviter de surcharger la page d'accueil
                 if (tempListe.size() >= 50) break;
 
                 JSONObject obj = array.getJSONObject(i);
-                String dateSortieStr = obj.optString("date_parution", ""); // Assure-toi que la clé est correcte
+                String dateSortieStr = obj.optString("date_parution", "");
 
                 try {
                     Date dateSortie = sdf.parse(dateSortieStr);
 
-                    // On n'ajoute que si la date de sortie est AVANT ou EGALE à aujourd'hui
+                    // LOGIQUE : On affiche uniquement si le manga est DÉJÀ disponible (date <= aujourd'hui)
                     if (dateSortie != null && !dateSortie.after(aujourdhui)) {
                         tempListe.add(new MangaClass(
                                 obj.optString("titre_serie"),
@@ -203,13 +215,12 @@ public class HomeActivity extends BaseActivity {
                                 false, false, false
                         ));
                     }
-                } catch (ParseException e) {
-                    // Si la date est mal formatée, on peut décider de l'ignorer ou de l'afficher
+                } catch (java.text.ParseException e) {
                     Log.e("HOME_DATE", "Format de date invalide pour : " + dateSortieStr);
                 }
             }
 
-            // Mise à jour de l'adapter
+            // MISE À JOUR : On vide la liste actuelle pour la remplacer par la liste filtrée
             mangaList.clear();
             mangaList.addAll(tempListe);
             adapter.notifyDataSetChanged();

@@ -19,7 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Activité gérant la création d'un nouveau compte utilisateur.
+ * Inclut des vérifications de sécurité et le stockage dans le JSON des utilisateurs.
+ */
 public class RegisterActivity extends BaseActivity {
 
     private EditText editEmail, editPassword;
@@ -27,56 +30,61 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Activation du mode plein écran (Edge-to-Edge)
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
+
+        // Gestion des marges pour les barres système (statut et navigation)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Liaison avec l'ID du XML
+        // 1. BOUTON RETOUR : Fermeture de l'activité avec animation
         ImageView btnBack = findViewById(R.id.btn_back);
-
-        // Gestion du clic
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> {
-                // Cette commande ferme l'activité actuelle et revient à la précédente
                 finish();
-
-                // ajouter une animation de sortie (glissement vers la droite)
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             });
         }
 
+        // 2. LIEN VERS CONNEXION : Redirection si l'utilisateur a déjà un compte
         TextView tvLogIn = findViewById(R.id.tv_log_in);
-
         if (tvLogIn != null) {
             tvLogIn.setOnClickListener(v -> {
-                // Redirection vers LoginActivity
                 Intent LoginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(LoginIntent);
-
-                // animation de transition
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             });
         }
 
-        // Inscription
+        // 3. INITIALISATION DES CHAMPS DE SAISIE
         editEmail = findViewById(R.id.email_register);
         editPassword = findViewById(R.id.password_register);
 
+        // 4. ACTION D'INSCRIPTION : Déclenchement de la logique de création
         findViewById(R.id.btn_register).setOnClickListener(v -> {
             registerUser();
         });
     }
 
+    /**
+     * Valide les données saisies et enregistre le nouvel utilisateur.
+     */
     private void registerUser() {
         String email = editEmail.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
 
-        // Validation du format du mot de passe (Regex)
-        // Majuscule, minuscule, spécial, min 8 car.
+        /* VALIDATION DU MOT DE PASSE :
+           Utilisation d'un Regex pour exiger :
+           - Au moins un chiffre [0-9]
+           - Une minuscule [a-z] et une majuscule [A-Z]
+           - Un caractère spécial [@#$%^&+=!.?,$]
+           - Minimum 8 caractères
+        */
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!.?,$])(?=\\S+$).{8,}$";
 
         if (!password.matches(passwordPattern)) {
@@ -84,10 +92,10 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        // Charger les utilisateurs existants
+        // CHARGEMENT : Récupération de la liste actuelle des utilisateurs via SecurityUtils
         JSONArray users = SecurityUtils.getUsers(this);
 
-        // Vérifier si l'email existe déjà
+        // VÉRIFICATION D'UNICITÉ : On vérifie que l'email n'est pas déjà enregistré
         for (int i = 0; i < users.length(); i++) {
             try {
                 if (users.getJSONObject(i).getString("email").equals(email)) {
@@ -97,18 +105,25 @@ public class RegisterActivity extends BaseActivity {
             } catch (JSONException e) { e.printStackTrace(); }
         }
 
-        // Créer le nouvel utilisateur
+        // CRÉATION DU COMPTE
         try {
             JSONObject newUser = new JSONObject();
             newUser.put("email", email);
-            newUser.put("password", SecurityUtils.hashPassword(password));
-            newUser.put("collection", new JSONArray()); // Liste vide au départ
 
+            /* SÉCURITÉ : Le mot de passe n'est jamais enregistré en clair.
+               On enregistre une version hachée via SecurityUtils.hashPassword.
+            */
+            newUser.put("password", SecurityUtils.hashPassword(password));
+            newUser.put("collection", new JSONArray()); // Initialise une bibliothèque vide
+
+            // AJOUT ET SAUVEGARDE : Mise à jour du fichier JSON global des utilisateurs
             users.put(newUser);
             SecurityUtils.saveUsers(this, users);
 
             Toast.makeText(this, "Inscription validée !", Toast.LENGTH_SHORT).show();
-            finish(); // Retour au Login
+
+            // Fin de l'activité pour retourner automatiquement à l'écran de Login
+            finish();
         } catch (JSONException e) {
             e.printStackTrace();
         }

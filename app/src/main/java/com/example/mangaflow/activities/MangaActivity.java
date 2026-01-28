@@ -28,6 +28,7 @@ import java.util.List;
 
 public class MangaActivity extends BaseActivity {
 
+    // Déclaration des variables pour le manga actuel et les boutons d'action
     private MangaClass currentManga;
     private Button btnAjouter, btnSuivre, btnALire;
 
@@ -36,15 +37,16 @@ public class MangaActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manga);
 
-        // 1. Initialisation des boutons
+        // 1. Initialisation des boutons par leur ID XML
         btnAjouter = findViewById(R.id.btn_add);
         btnSuivre = findViewById(R.id.btn_follow);
         btnALire = findViewById(R.id.btn_read);
 
-        // 2. Récupération des extras (Titre ET Numéro)
+        // 2. Récupération des données transmises via l'Intent (Titre et Numéro du tome)
         String targetTitle = getIntent().getStringExtra("TITRE_MANGA");
         int targetNumber = getIntent().getIntExtra("NUMERO_TOME", 1);
 
+        // Si on a bien un titre, on charge les données, sinon on ferme la page
         if (targetTitle != null) {
             loadMangaFromJSON(targetTitle, targetNumber);
         } else {
@@ -52,44 +54,54 @@ public class MangaActivity extends BaseActivity {
             finish();
         }
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION : Configuration des clics sur les boutons de retour et de menu ---
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
         findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
         findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
         findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
         findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
+
+        // Initialisation des liens vers la page Série et Éditeur
         setupSerieLinks();
 
-        // --- LISTENERS ACTIONS ---
+        // --- LISTENERS ACTIONS : Déclenchement des sauvegardes au clic sur les boutons d'état ---
         btnAjouter.setOnClickListener(v -> handleAction("ADD"));
         btnSuivre.setOnClickListener(v -> handleAction("FOLLOW"));
         btnALire.setOnClickListener(v -> handleAction("READ"));
     }
 
+    /**
+     * Gère les actions utilisateur (Ajout, Suivi, Lecture) en modifiant le JSON local de l'utilisateur.
+     */
     private void handleAction(String actionType) {
+        // Récupération de l'email en session pour identifier le bon fichier JSON
         SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
         String email = pref.getString("user_email", null);
 
+        // Si non connecté, redirection vers le login
         if (email == null) {
             startActivity(new Intent(this, LoginActivity.class));
             return;
         }
 
         try {
+            // Chargement du fichier de données privé de l'utilisateur
             File file = new File(getFilesDir(), email + "_data.json");
             JSONObject userData = file.exists() ? new JSONObject(loadStringFromFile(file)) : new JSONObject();
             if (!userData.has("collection")) userData.put("collection", new JSONArray());
 
             JSONArray collection = userData.getJSONArray("collection");
+            // Recherche ou création de l'entrée série/tome dans le JSON
             JSONObject serie = findOrCreateSerie(collection, currentManga.getTitre_serie());
             JSONObject tome = findOrCreateTome(serie.getJSONArray("mangas"), currentManga.getNumero_tome());
 
+            // Modification des booléens selon l'action demandée
             switch (actionType) {
                 case "ADD":
                     boolean isPossede = !tome.optBoolean("posséder", false);
                     tome.put("posséder", isPossede);
-                    tome.put("souhaiter", isPossede); // Suivre auto si ajouté
+                    tome.put("souhaiter", isPossede);
                     if (!isPossede) { tome.put("lu", false); tome.put("souhaiter", false); }
                     break;
                 case "FOLLOW":
@@ -100,8 +112,10 @@ public class MangaActivity extends BaseActivity {
                     break;
             }
 
+            // Enregistrement des modifications dans le fichier
             saveStringToFile(file, userData.toString());
-            updateButtonsUI(tome); // Rafraîchissement immédiat de l'affichage
+            // Mise à jour visuelle immédiate des boutons
+            updateButtonsUI(tome);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,23 +123,25 @@ public class MangaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Met à jour les couleurs et textes des boutons en fonction de l'état du tome dans le JSON.
+     */
     private void updateButtonsUI(JSONObject tome) {
-        // runOnUiThread garantit que l'affichage change bien sur l'écran
         runOnUiThread(() -> {
             try {
-                // AJOUTER / RETIRER
+                // Gestion visuelle du bouton AJOUTER
                 boolean possede = tome.optBoolean("posséder", false);
                 btnAjouter.setBackgroundTintList(ColorStateList.valueOf(possede ? Color.parseColor("#0083ff") : Color.WHITE));
                 btnAjouter.setTextColor(possede ? Color.WHITE : Color.BLACK);
                 btnAjouter.setText(possede ? "Retirer" : "Ajouter");
 
-                // SUIVRE / SUIVI
+                // Gestion visuelle du bouton SUIVRE
                 boolean souhaite = tome.optBoolean("souhaiter", false);
                 btnSuivre.setBackgroundTintList(ColorStateList.valueOf(souhaite ? Color.parseColor("#C00F0C") : Color.WHITE));
                 btnSuivre.setTextColor(souhaite ? Color.WHITE : Color.BLACK);
                 btnSuivre.setText(souhaite ? "Suivi" : "Suivre");
 
-                // LU / A LIRE
+                // Gestion visuelle du bouton LU
                 boolean lu = tome.optBoolean("lu", false);
                 btnALire.setBackgroundTintList(ColorStateList.valueOf(lu ? Color.parseColor("#009951") : Color.WHITE));
                 btnALire.setTextColor(lu ? Color.WHITE : Color.BLACK);
@@ -137,6 +153,9 @@ public class MangaActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Vérifie au chargement si ce manga existe déjà dans la collection utilisateur pour colorer les boutons.
+     */
     private void checkAndRefreshUserStatus() {
         SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
         String email = pref.getString("user_email", null);
@@ -150,6 +169,7 @@ public class MangaActivity extends BaseActivity {
             JSONArray collection = userData.optJSONArray("collection");
             if (collection == null) return;
 
+            // Parcours du JSON pour trouver la série puis le tome correspondant
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
                 if (serie.getString("nom").equalsIgnoreCase(currentManga.getTitre_serie())) {
@@ -157,7 +177,7 @@ public class MangaActivity extends BaseActivity {
                     for (int j = 0; j < mangas.length(); j++) {
                         JSONObject tome = mangas.getJSONObject(j);
 
-                        // Comparaison robuste String vs String
+                        // Comparaison du numéro de tome
                         String numJson = String.valueOf(tome.opt("numéro"));
                         String numCible = String.valueOf(currentManga.getNumero_tome());
 
@@ -172,6 +192,9 @@ public class MangaActivity extends BaseActivity {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+    /**
+     * Remet tous les boutons en blanc si le manga n'est pas dans la collection.
+     */
     private void resetButtonsToDefault() {
         runOnUiThread(() -> {
             btnAjouter.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
@@ -186,8 +209,11 @@ public class MangaActivity extends BaseActivity {
         });
     }
 
-    // --- UTILS JSON ---
+    // --- UTILS JSON : Méthodes pour manipuler les fichiers JSON ---
 
+    /**
+     * Cherche une série dans la collection ou la crée si elle n'existe pas.
+     */
     private JSONObject findOrCreateSerie(JSONArray collection, String nom) throws Exception {
         for (int i = 0; i < collection.length(); i++) {
             if (collection.getJSONObject(i).getString("nom").equalsIgnoreCase(nom)) return collection.getJSONObject(i);
@@ -214,6 +240,9 @@ public class MangaActivity extends BaseActivity {
         return newSerie;
     }
 
+    /**
+     * Cherche un tome dans une série ou le crée par défaut.
+     */
     private JSONObject findOrCreateTome(JSONArray mangas, int numero) throws Exception {
         for (int i = 0; i < mangas.length(); i++) {
             if (mangas.getJSONObject(i).optInt("numéro") == numero) return mangas.getJSONObject(i);
@@ -228,6 +257,7 @@ public class MangaActivity extends BaseActivity {
         return newTome;
     }
 
+    // Lit le contenu d'un fichier et retourne une String
     private String loadStringFromFile(File file) throws Exception {
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
@@ -235,12 +265,16 @@ public class MangaActivity extends BaseActivity {
         return new String(data, StandardCharsets.UTF_8);
     }
 
+    // Sauvegarde une String dans un fichier
     private void saveStringToFile(File file, String content) throws Exception {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(content.getBytes(StandardCharsets.UTF_8));
         fos.close();
     }
 
+    /**
+     * Charge les infos complètes d'un manga depuis mangas.json via son titre et son numéro.
+     */
     private void loadMangaFromJSON(String titleToFind, int numberToFind) {
         try {
             InputStream is = getResources().openRawResource(R.raw.mangas);
@@ -251,7 +285,6 @@ public class MangaActivity extends BaseActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
-                // FILTRE SUR LE TITRE ET LE NUMÉRO DE TOME
                 if (obj.optString("titre_serie").equalsIgnoreCase(titleToFind) &&
                         obj.optInt("numero_tome") == numberToFind) {
 
@@ -261,13 +294,13 @@ public class MangaActivity extends BaseActivity {
                         for(int j=0; j<auteursJ.length(); j++) auteurs.add(auteursJ.getString(j));
                     }
 
-                    // Traitement du prix (Nettoyage de la chaîne "€" et ",")
                     String prixRaw = obj.optString("prix", "0.0");
                     float prixClean = 0.0f;
                     try {
                         prixClean = Float.parseFloat(prixRaw.replace("€", "").replace(",", ".").trim());
                     } catch (Exception e) { Log.e("MangaFlow", "Erreur prix"); }
 
+                    // Création de l'objet currentManga avec toutes les données parsées
                     currentManga = new MangaClass(
                             obj.optString("titre_serie"),
                             obj.optInt("numero_tome"),
@@ -294,8 +327,10 @@ public class MangaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Configure les clics sur les sections "Série" et "Éditeur" pour rediriger vers leurs pages.
+     */
     private void setupSerieLinks() {
-        // --- BLOC SÉRIE ---
         View layoutSerie = findViewById(R.id.layout_serie_link);
         if (layoutSerie != null) {
             layoutSerie.setOnClickListener(v -> {
@@ -308,7 +343,6 @@ public class MangaActivity extends BaseActivity {
             });
         }
 
-        // --- BLOC ÉDITEUR (Modification ici) ---
         View layoutEdition = findViewById(R.id.layout_editeur_link);
         if (layoutEdition != null) {
             layoutEdition.setOnClickListener(v -> {
@@ -316,8 +350,6 @@ public class MangaActivity extends BaseActivity {
                     String jsonEditeur = getEditeurData(currentManga.getEditeur());
                     if (jsonEditeur != null) {
                         Intent intent = new Intent(this, EditorActivity.class);
-                        // On envoie le JSON complet pour que EditorActivity puisse extraire
-                        // les listes (Mangas, Artbooks, etc.)
                         intent.putExtra("DATA_JSON", jsonEditeur);
                         startActivity(intent);
                     } else {
@@ -328,7 +360,9 @@ public class MangaActivity extends BaseActivity {
         }
     }
 
-    // Fonction utilitaire pour chercher l'éditeur dans editeurs.json
+    /**
+     * Récupère le contenu JSON d'un éditeur spécifique depuis editeurs.json.
+     */
     private String getEditeurData(String nomEditeur) {
         try {
             InputStream is = getResources().openRawResource(R.raw.editeurs);
@@ -338,7 +372,6 @@ public class MangaActivity extends BaseActivity {
 
             for (int i = 0; i < editeursArray.length(); i++) {
                 JSONObject editeur = editeursArray.getJSONObject(i);
-                // On compare le nom du manga avec le champ "nom" du JSON éditeur
                 if (editeur.optString("nom").equalsIgnoreCase(nomEditeur)) {
                     return editeur.toString();
                 }
@@ -349,6 +382,9 @@ public class MangaActivity extends BaseActivity {
         return null;
     }
 
+    /**
+     * Met à jour les TextView et ImageView de la page avec les infos du manga.
+     */
     private void updateUI(MangaClass manga) {
         ((TextView) findViewById(R.id.tv_header_title)).setText(manga.getTitre_serie());
         ((TextView) findViewById(R.id.tv_info_title)).setText(manga.getTitre_serie());
@@ -357,7 +393,6 @@ public class MangaActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_editeur_name)).setText(manga.getEdition() + " - " + manga.getEditeur());
         ((TextView) findViewById(R.id.tv_manga_summary)).setText(manga.getResume());
 
-        // FIX PRIX ET PAGES
         ((TextView) findViewById(R.id.tv_price)).setText(String.format("%.2f€", manga.getPrix()));
         ((TextView) findViewById(R.id.tv_nb_pages)).setText("Nombre de pages : " + (manga.getNb_pages() > 0 ? manga.getNb_pages() : "Inconnu"));
         ((TextView) findViewById(R.id.tv_date)).setText(manga.getDate_parution());

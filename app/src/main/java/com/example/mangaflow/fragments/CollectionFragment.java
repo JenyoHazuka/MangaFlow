@@ -33,15 +33,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment principal de la bibliothèque utilisateur.
+ * Gère l'affichage des séries possédées, le calcul de progression et le scan ISBN.
+ */
 public class CollectionFragment extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collection, container, false);
 
-        // Configuration du bouton SCAN
+        // 1. CONFIGURATION DU SCAN : Bouton déclenchant l'appareil photo
         view.findViewById(R.id.btn_scan).setOnClickListener(v -> {
             ScanOptions options = new ScanOptions();
-            options.setDesiredBarcodeFormats(ScanOptions.EAN_13); // Format standard ISBN
+            options.setDesiredBarcodeFormats(ScanOptions.EAN_13); // Format ISBN standard
             options.setPrompt("Scannez le code-barre du manga");
             options.setBeepEnabled(true);
             options.setOrientationLocked(true);
@@ -51,8 +56,9 @@ public class CollectionFragment extends Fragment {
         CollectionActivity activity = (CollectionActivity) getActivity();
         if (activity == null) return view;
 
-        JSONArray collection = activity.getCollection();
-        JSONArray seriesRef = activity.getSeriesReference(); // Lit res/raw/series.json
+        // Récupération des données chargées par l'activité parente
+        JSONArray collection = activity.getCollection(); // Données privées de l'utilisateur
+        JSONArray seriesRef = activity.getSeriesReference(); // Référentiel global (raw/series.json)
 
         TextView tvTomes = view.findViewById(R.id.tv_total_tomes);
         TextView tvSeries = view.findViewById(R.id.tv_total_series);
@@ -62,11 +68,12 @@ public class CollectionFragment extends Fragment {
         List<JSONObject> filteredList = new ArrayList<>();
 
         try {
+            // 2. LOGIQUE DE SYNTHÈSE : On croise les données utilisateur avec le référentiel
             for (int i = 0; i < collection.length(); i++) {
                 JSONObject serie = collection.getJSONObject(i);
                 String nomSerie = serie.optString("nom");
 
-                // 1. Jointure avec series.JSON pour Total et Statut
+                // Étape A : On cherche le nombre total théorique de tomes dans series.json
                 int totalTheorique = 0;
                 String statut = "";
                 for (int j = 0; j < seriesRef.length(); j++) {
@@ -76,6 +83,7 @@ public class CollectionFragment extends Fragment {
                         if (editions != null && editions.length() > 0) {
                             JSONObject firstEd = editions.getJSONObject(0);
                             String rawNb = firstEd.optString("nb_tomes", "0");
+                            // Nettoyage de la chaîne (ex: "34 tomes" -> 34)
                             totalTheorique = Integer.parseInt(rawNb.replaceAll("[^0-9]", ""));
                             statut = firstEd.optString("statut", "");
                         }
@@ -83,7 +91,7 @@ public class CollectionFragment extends Fragment {
                     }
                 }
 
-                // 2. Calcul des possédés
+                // Étape B : On compte combien de tomes l'utilisateur possède réellement
                 JSONArray mangas = serie.optJSONArray("mangas");
                 int nbPossedes = 0;
                 if (mangas != null) {
@@ -95,17 +103,18 @@ public class CollectionFragment extends Fragment {
                     }
                 }
 
-                // 3. Préparation pour l'Adapter (Mode Collection)
+                // Étape C : Préparation de l'objet pour le SerieAdapter
                 if (nbPossedes > 0) {
                     serie.put("nb_possedes", nbPossedes);
                     serie.put("nombre_tome_total", totalTheorique);
                     serie.put("statut", statut);
-                    serie.put("affichage_collection", true); // Active la barre de progression
+                    serie.put("affichage_collection", true); // Flag pour afficher la ProgressBar
                     filteredList.add(serie);
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }
 
+        // Mise à jour des compteurs en haut de page
         tvTomes.setText(countTotalTomes + " Tomes");
         tvSeries.setText(filteredList.size() + " Séries");
 
@@ -115,39 +124,22 @@ public class CollectionFragment extends Fragment {
         return view;
     }
 
-    // 1. Launcher pour le résultat du scan
+    // --- GESTION DU SCANNER (Zxing / JourneyApps) ---
+
+    // Callback recevant le résultat du scan (le code EAN-13)
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
                 if (result.getContents() != null) {
-                    String isbnScanne = result.getContents();
-                    rechercherMangaParISBN(isbnScanne);
+                    rechercherMangaParISBN(result.getContents());
                 }
             });
 
-    // 2. Launcher pour la permission Caméra
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    lancerScanner();
-                } else {
-                    Toast.makeText(getContext(), "Accès caméra refusé", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-    // 3. Fonction d'ajout
-    private void lancerScanner() {
-        ScanOptions options = new ScanOptions();
-        options.setDesiredBarcodeFormats(ScanOptions.EAN_13);
-        options.setPrompt("Scannez le code ISBN du manga");
-        options.setBeepEnabled(true);
-        options.setOrientationLocked(true);
-        barcodeLauncher.launch(options);
-    }
-
+    /**
+     * Recherche le code scanné dans la base mangas.json
+     */
     private void rechercherMangaParISBN(String isbn) {
         try {
-            // 1. Charger la base de données complète des mangas
             InputStream is = getResources().openRawResource(R.raw.mangas);
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
@@ -156,6 +148,7 @@ public class CollectionFragment extends Fragment {
 
             JSONObject mangaTrouve = null;
             for (int i = 0; i < allMangas.length(); i++) {
+                // Comparaison de l'EAN scanné avec celui du JSON
                 if (allMangas.getJSONObject(i).optString("ean").equals(isbn)) {
                     mangaTrouve = allMangas.getJSONObject(i);
                     break;
@@ -163,24 +156,24 @@ public class CollectionFragment extends Fragment {
             }
 
             if (mangaTrouve != null) {
-                // 2. Ajouter automatiquement à la collection de l'utilisateur
+                // Si trouvé : Ajout silencieux en base et redirection vers la fiche
                 ajouterMangaALaCollectionAutomatique(mangaTrouve);
 
-                // 3. Ouvrir la page pour montrer le succès
                 Intent intent = new Intent(getContext(), MangaActivity.class);
                 intent.putExtra("TITRE_MANGA", mangaTrouve.optString("titre_serie"));
                 intent.putExtra("NUMERO_TOME", mangaTrouve.optInt("numero_tome"));
                 startActivity(intent);
 
-                Toast.makeText(getContext(), "Manga ajouté à la collection !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Manga ajouté !", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "Code ISBN inconnu", Toast.LENGTH_SHORT).show();
             }
-        } catch (Exception e) {
-            Log.e("SCAN_AUTO", "Erreur : " + e.getMessage());
-        }
+        } catch (Exception e) { Log.e("SCAN_AUTO", "Erreur : " + e.getMessage()); }
     }
 
+    /**
+     * Inscrit le manga scanné dans le fichier JSON privé de l'utilisateur.
+     */
     private void ajouterMangaALaCollectionAutomatique(JSONObject mangaObj) {
         try {
             SharedPreferences pref = requireContext().getSharedPreferences("UserSession", android.content.Context.MODE_PRIVATE);
@@ -189,15 +182,13 @@ public class CollectionFragment extends Fragment {
 
             File file = new File(requireContext().getFilesDir(), email + "_data.json");
             JSONObject userData = file.exists() ? new JSONObject(loadStringFromFile(file)) : new JSONObject();
-
             if (!userData.has("collection")) userData.put("collection", new JSONArray());
             JSONArray collection = userData.getJSONArray("collection");
 
-            // Utilisation des noms de clés pour correspondre à votre logique de série
             String titreSerie = mangaObj.optString("titre_serie");
             int numTome = mangaObj.optInt("numero_tome");
 
-            // Trouver ou créer la série
+            // Recherche de la série existante ou création
             JSONObject serieJson = null;
             for (int i = 0; i < collection.length(); i++) {
                 if (collection.getJSONObject(i).getString("nom").equalsIgnoreCase(titreSerie)) {
@@ -205,7 +196,6 @@ public class CollectionFragment extends Fragment {
                     break;
                 }
             }
-
             if (serieJson == null) {
                 serieJson = new JSONObject();
                 serieJson.put("nom", titreSerie);
@@ -215,7 +205,7 @@ public class CollectionFragment extends Fragment {
 
             JSONArray mangasArray = serieJson.getJSONArray("mangas");
 
-            // Trouver ou créer le tome
+            // Recherche du tome ou création
             JSONObject tomeJson = null;
             for (int i = 0; i < mangasArray.length(); i++) {
                 if (mangasArray.getJSONObject(i).optInt("numéro") == numTome) {
@@ -223,31 +213,27 @@ public class CollectionFragment extends Fragment {
                     break;
                 }
             }
-
             if (tomeJson == null) {
                 tomeJson = new JSONObject();
                 tomeJson.put("numéro", numTome);
                 mangasArray.put(tomeJson);
             }
 
-            // Action automatique : Possédé et Suivi
+            // Mise à jour des états (Possédé par défaut après un scan)
             tomeJson.put("posséder", true);
             tomeJson.put("souhaiter", true);
             tomeJson.put("jaquette", mangaObj.optString("image_url"));
 
-            // Sauvegarde physique sur le téléphone
             saveStringToFile(file, userData.toString());
 
-        } catch (Exception e) {
-            Log.e("SAVE_AUTO", "Erreur sauvegarde : " + e.getMessage());
-        }
+        } catch (Exception e) { Log.e("SAVE_AUTO", "Erreur : " + e.getMessage()); }
     }
 
+    // Méthodes utilitaires de lecture/écriture de fichiers
     private String loadStringFromFile(File file) throws Exception {
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
-        fis.read(data);
-        fis.close();
+        fis.read(data); fis.close();
         return new String(data, StandardCharsets.UTF_8);
     }
 

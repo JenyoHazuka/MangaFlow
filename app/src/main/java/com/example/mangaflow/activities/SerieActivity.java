@@ -16,19 +16,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activité affichant la fiche détaillée d'une série.
+ * Elle regroupe les informations sur l'auteur, l'édition et affiche la liste des tomes.
+ */
 public class SerieActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private List<MangaClass> tomesDeLEdition = new ArrayList<>();
-    private String sName = "";
-    private String eName = "";
+    private String sName = ""; // Nom de la série
+    private String eName = ""; // Nom de l'éditeur
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_serie);
 
-        // Récupération des données passées par l'Intent
+        // 1. RÉCUPÉRATION DES PARAMÈTRES : Tentative de récupération via JSON brut ou Extras simples
         try {
             String jsonStr = getIntent().getStringExtra("DATA_JSON");
             if (jsonStr != null) {
@@ -42,49 +46,34 @@ public class SerieActivity extends BaseActivity {
             e.printStackTrace();
         }
 
+        // Sécurité : si on n'a pas de nom de série, on ne peut rien afficher
         if (sName == null || sName.isEmpty()) {
             finish();
             return;
         }
 
-        // Header Titre
+        // Mise à jour du titre dans l'en-tête (Header)
         TextView tvTitle = findViewById(R.id.tv_serie_title_header);
         if (tvTitle != null) tvTitle.setText(sName);
 
-        // Configuration du RecyclerView en Horizontal (Carrousel)
+        // 2. CONFIGURATION DU RECYCLERVIEW : Utilisation d'un layout horizontal pour l'effet carrousel
         recyclerView = findViewById(R.id.rv_tomes_carrousel);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION : Gestion des clics sur les boutons de retour et du menu principal ---
         findViewById(R.id.btn_back_serie).setOnClickListener(v -> finish());
+        setupNavigationListeners();
 
-        findViewById(R.id.btn_home).setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
-        });
-
-        findViewById(R.id.btn_collection).setOnClickListener(v -> {
-            startActivity(new Intent(this, CollectionActivity.class));
-        });
-
-        findViewById(R.id.btn_planning).setOnClickListener(v -> {
-            startActivity(new Intent(this, PlanningActivity.class));
-        });
-
-        findViewById(R.id.btn_search).setOnClickListener(v -> {
-            startActivity(new Intent(this, SearchActivity.class));
-        });
-
-        findViewById(R.id.btn_maps).setOnClickListener(v -> {
-            startActivity(new Intent(this, MapsActivity.class));
-        });
-
-        // Lancement du chargement des données
+        // 3. CHARGEMENT DES DONNÉES : On lance la logique de lecture des fichiers JSON
         loadTomes(sName, eName);
     }
 
+    /**
+     * Orchestre le chargement des informations de la série (Auteur, Statut) et de ses tomes.
+     */
     private void loadTomes(String serie, String editeur) {
         try {
-            // 1. CHERCHER L'ÉDITEUR DANS editeurs.json (si absent de l'Intent)
+            // ÉTAPE 1 : Si l'éditeur est inconnu, on le cherche dans editeurs.json en parcourant les listes de mangas
             if (editeur == null || editeur.isEmpty()) {
                 InputStream isE = getResources().openRawResource(R.raw.editeurs);
                 byte[] bufferE = new byte[isE.available()];
@@ -101,7 +90,7 @@ public class SerieActivity extends BaseActivity {
                 }
             }
 
-            // 2. CHERCHER LES INFOS DANS series.json (Auteur, Editions, Statut)
+            // ÉTAPE 2 : Recherche des métadonnées (Auteur, Éditions, Statut) dans series.json
             InputStream isS = getResources().openRawResource(R.raw.series);
             byte[] bufferS = new byte[isS.available()];
             isS.read(bufferS);
@@ -113,11 +102,13 @@ public class SerieActivity extends BaseActivity {
                 String titreJson = obj.has("titre") ? obj.getString("titre") : obj.optString("nom");
 
                 if (titreJson.equalsIgnoreCase(serie)) {
-                    // --- PARTIE AUTEUR ---
+                    // Extraction et affichage du premier auteur trouvé
                     JSONArray auteursArray = obj.optJSONArray("auteurs");
                     if (auteursArray != null && auteursArray.length() > 0) {
                         final String nomAut = auteursArray.getJSONObject(0).optString("nom");
                         ((TextView) findViewById(R.id.tv_serie_auteur)).setText(nomAut);
+
+                        // Rendre le nom de l'auteur cliquable pour aller sur sa fiche
                         findViewById(R.id.layout_auteur_cliquable).setOnClickListener(v -> {
                             Intent intent = new Intent(this, AuteurActivity.class);
                             intent.putExtra("nom_auteur", nomAut);
@@ -125,7 +116,7 @@ public class SerieActivity extends BaseActivity {
                         });
                     }
 
-                    // --- PARTIE ÉDITIONS (Structure imbriquée de ton JSON) ---
+                    // Extraction des détails de l'édition (Nombre de tomes et statut)
                     JSONArray editionsArray = obj.optJSONArray("editions");
                     if (editionsArray != null && editionsArray.length() > 0) {
                         JSONObject editionObj = editionsArray.getJSONObject(0);
@@ -141,7 +132,7 @@ public class SerieActivity extends BaseActivity {
                 }
             }
 
-            // 3. CHARGER LES TOMES DANS LE CARROUSEL
+            // ÉTAPE 3 : Chargement de la liste des tomes pour remplir le carrousel
             loadMangasCarrousel(serie, editeur);
 
         } catch (Exception e) {
@@ -149,6 +140,9 @@ public class SerieActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Vérifie si une série appartient à un éditeur donné en cherchant dans ses différentes catégories.
+     */
     private boolean isSerieInEditeur(JSONObject editeurJson, String serieNom) {
         String[] categories = {"mangas", "light_novels", "artbooks"};
         for (String cat : categories) {
@@ -162,6 +156,9 @@ public class SerieActivity extends BaseActivity {
         return false;
     }
 
+    /**
+     * Parcourt mangas.json pour récupérer tous les tomes appartenant à la série actuelle.
+     */
     private void loadMangasCarrousel(String serie, String editeur) {
         try {
             InputStream isM = getResources().openRawResource(R.raw.mangas);
@@ -173,8 +170,8 @@ public class SerieActivity extends BaseActivity {
             tomesDeLEdition.clear();
             for (int i = 0; i < arrayMangas.length(); i++) {
                 JSONObject m = arrayMangas.getJSONObject(i);
+                // On vérifie le titre de la série et éventuellement l'éditeur
                 if (m.optString("titre_serie").equalsIgnoreCase(serie)) {
-                    // Filtrage optionnel par éditeur si présent
                     if (editeur == null || editeur.isEmpty() || m.optString("editeur_fr").equalsIgnoreCase(editeur)) {
                         tomesDeLEdition.add(new MangaClass(
                                 m.optString("titre_serie"),
@@ -189,13 +186,25 @@ public class SerieActivity extends BaseActivity {
                 }
             }
 
-            // Tri par numéro de tome (Java 8+)
+            // TRI : On s'assure que les tomes apparaissent dans l'ordre (Tome 1, 2, 3...)
             tomesDeLEdition.sort((m1, m2) -> Integer.compare(m1.getNumero_tome(), m2.getNumero_tome()));
 
+            // Attribution de l'adapter avec un layout spécifique pour les items du carrousel
             recyclerView.setAdapter(new MangaAdapter(tomesDeLEdition, R.layout.manga_item_carrousel));
 
         } catch (Exception e) {
             Log.e("MangaFlow", "Erreur carrousel mangas", e);
         }
+    }
+
+    /**
+     * Centralisation des listeners de navigation.
+     */
+    private void setupNavigationListeners() {
+        findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+        findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
+        findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
+        findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
     }
 }
