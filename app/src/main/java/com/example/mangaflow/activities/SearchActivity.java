@@ -43,18 +43,30 @@ public class SearchActivity extends BaseActivity {
         EditText searchBar = findViewById(R.id.search_bar);
         RecyclerView rv = findViewById(R.id.recyclerView);
 
-        // CONFIGURATION DU CLICK AVEC REDIRECTION VERS SERIEACTIVITY
+        // CONFIGURATION DU CLICK AVEC REDIRECTION ADAPTÉE
         adapter = new SearchAdapter(listAuteurs, "nom", data -> {
             Intent intent;
             if (currentCategory.equals("Auteurs")) {
                 intent = new Intent(this, AuteurActivity.class);
+
+                // On récupère le nom complet (ex: "Haruba Negi (Dessinateur)")
+                String nomComplet = data.optString("nom");
+
+                // NETTOYAGE : On ne garde que ce qui est avant la parenthèse
+                String nomNettoye = nomComplet.split("\\(")[0].trim();
+
+                // On envoie le nom propre à AuteurActivity
+                intent.putExtra("nom_auteur", nomNettoye);
+
             } else if (currentCategory.equals("Editeurs")) {
                 intent = new Intent(this, EditorActivity.class);
+                intent.putExtra("DATA_JSON", data.toString());
+
             } else {
                 // REDIRECTION VERS LA PAGE SÉRIE
                 intent = new Intent(this, SerieActivity.class);
+                intent.putExtra("SERIE_NAME", data.optString("titre"));
             }
-            intent.putExtra("DATA_JSON", data.toString());
             startActivity(intent);
         });
 
@@ -91,7 +103,22 @@ public class SearchActivity extends BaseActivity {
             is.read(buffer);
             is.close();
             JSONArray array = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
-            for (int i = 0; i < array.length(); i++) { results.add(array.getJSONObject(i)); }
+
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+
+                // --- CORRECTION : Nettoyage des auteurs ---
+                if (resName.equals("auteurs") && obj.has("nom")) {
+                    String nomBrut = obj.getString("nom");
+                    if (nomBrut.contains("(")) {
+                        // On garde uniquement ce qui est avant la parenthèse et on nettoie les espaces
+                        String nomNettoye = nomBrut.split("\\(")[0].trim();
+                        obj.put("nom", nomNettoye);
+                    }
+                }
+
+                results.add(obj);
+            }
 
             // TRI ALPHABÉTIQUE
             Collections.sort(results, (a, b) -> {
