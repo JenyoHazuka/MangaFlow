@@ -41,15 +41,23 @@ public class PlanningAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             JSONObject manga = (JSONObject) itemList.get(position);
             MangaVH h = (MangaVH) holder;
 
-            // Utilisation des clés exactes de ton JSON
-            h.tvTitle.setText(manga.optString("titre_serie", "Sans titre"));
+            String titreSerie = manga.optString("titre_serie", "Sans titre");
+            h.tvTitle.setText(titreSerie);
             h.tvTome.setText("Tome " + manga.optString("numero_tome", "X"));
 
             Glide.with(h.itemView.getContext())
-                    .load(manga.optString("image_url")) //
+                    .load(manga.optString("image_url"))
                     .placeholder(R.drawable.placeholder_cover)
                     .centerCrop()
                     .into(h.ivCover);
+
+            // --- AJOUT DE LA REDIRECTION ---
+            h.itemView.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(v.getContext(), com.example.mangaflow.activities.SerieActivity.class);
+                // On envoie le nom de la série pour que SerieActivity charge les données
+                intent.putExtra("SERIE_NAME", titreSerie);
+                v.getContext().startActivity(intent);
+            });
         }
     }
 
