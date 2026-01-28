@@ -20,6 +20,7 @@ public class AuteurActivity extends BaseActivity {
     private RecyclerView rvOeuvres;
     private TextView tvNomAuteur;
     private List<JSONObject> listeOeuvres = new ArrayList<>();
+    private String nomAuteurRecu = "";
     private static final String TAG = "DEBUG_AUTEUR";
 
     @Override
@@ -32,28 +33,17 @@ public class AuteurActivity extends BaseActivity {
 
         if (tvNomAuteur == null) { finish(); return; }
 
-        // RÉCUPÉRATION DU JSON COMPLET
-        String jsonStr = getIntent().getStringExtra("DATA_JSON");
+        // 1. RÉCUPÉRATION DU NOM SIMPLE (Envoyé par SerieActivity)
+        nomAuteurRecu = getIntent().getStringExtra("nom_auteur");
 
-        if (jsonStr != null) {
-            try {
-                JSONObject dataAuteur = new JSONObject(jsonStr);
-                String nomAuteur = dataAuteur.getString("nom");
+        if (nomAuteurRecu != null && !nomAuteurRecu.isEmpty()) {
+            // Nettoyage du nom (ex: "Haruba Negi (Auteur)" -> "Haruba Negi")
+            tvNomAuteur.setText(nomAuteurRecu.split("\\(")[0].trim());
 
-                // Nettoyage pour l'affichage
-                tvNomAuteur.setText(nomAuteur.split("\\(")[0].trim());
-
-                // Extraction directe de la jointure depuis l'objet reçu
-                JSONArray jointure = dataAuteur.optJSONArray("oeuvres_jointure");
-                List<String> titresOeuvres = new ArrayList<>();
-                if (jointure != null) {
-                    for (int i = 0; i < jointure.length(); i++) {
-                        titresOeuvres.add(jointure.getString(i));
-                    }
-                }
-                chargerImagesDepuisMangas(titresOeuvres);
-
-            } catch (Exception e) { Log.e(TAG, "Erreur JSON", e); }
+            // 2. On charge les œuvres de cet auteur
+            chargerOeuvresDeLAuteur(nomAuteurRecu);
+        } else {
+            Log.e(TAG, "Aucun nom d'auteur reçu dans l'intent");
         }
 
         rvOeuvres.setLayoutManager(new GridLayoutManager(this, 2));
@@ -62,29 +52,74 @@ public class AuteurActivity extends BaseActivity {
         setupNavigation();
     }
 
+    private void chargerOeuvresDeLAuteur(String nomAuteurCible) {
+        try {
+            // A. On scanne series.json pour trouver les titres des séries de cet auteur
+            InputStream isS = getResources().openRawResource(R.raw.series);
+            byte[] bufferS = new byte[isS.available()];
+            isS.read(bufferS);
+            isS.close();
+            JSONArray seriesArray = new JSONArray(new String(bufferS, StandardCharsets.UTF_8));
+
+            List<String> titresTrouves = new ArrayList<>();
+
+            for (int i = 0; i < seriesArray.length(); i++) {
+                JSONObject serie = seriesArray.getJSONObject(i);
+                JSONArray auteurs = serie.optJSONArray("auteurs");
+
+                if (auteurs != null) {
+                    for (int j = 0; j < auteurs.length(); j++) {
+                        String nomJson = auteurs.getJSONObject(j).optString("nom");
+                        if (nomJson.equalsIgnoreCase(nomAuteurCible)) {
+                            // On ajoute le nom de la série (clé "nom" ou "titre")
+                            titresTrouves.add(serie.optString("nom", serie.optString("titre")));
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // B. Pour chaque titre trouvé, on va chercher une image de couverture dans mangas.json
+            if (!titresTrouves.isEmpty()) {
+                chargerImagesDepuisMangas(titresTrouves);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Erreur lors du scan des séries", e);
+        }
+    }
+
     private void chargerImagesDepuisMangas(List<String> titres) {
         try {
-            InputStream is = getResources().openRawResource(R.raw.mangas);
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            is.close();
-            JSONArray mangasArray = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
+            InputStream isM = getResources().openRawResource(R.raw.mangas);
+            byte[] bufferM = new byte[isM.available()];
+            isM.read(bufferM);
+            isM.close();
+            JSONArray mangasArray = new JSONArray(new String(bufferM, StandardCharsets.UTF_8));
 
             for (String titre : titres) {
                 for (int i = 0; i < mangasArray.length(); i++) {
                     JSONObject manga = mangasArray.getJSONObject(i);
+                    // On prend le premier tome trouvé pour illustrer la série
                     if (manga.optString("titre_serie").equalsIgnoreCase(titre)) {
+                        // On s'assure que l'objet a bien une clé "nom" pour l'adapter
+                        manga.put("nom", titre);
                         listeOeuvres.add(manga);
                         break;
                     }
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            Log.e(TAG, "Erreur lors du scan des couvertures", e);
+        }
     }
 
     private void setupNavigation() {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+        findViewById(R.id.btn_collection).setOnClickListener(v -> startActivity(new Intent(this, CollectionActivity.class)));
+        findViewById(R.id.btn_planning).setOnClickListener(v -> startActivity(new Intent(this, PlanningActivity.class)));
         findViewById(R.id.btn_search).setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        findViewById(R.id.btn_maps).setOnClickListener(v -> startActivity(new Intent(this, MapsActivity.class)));
     }
 }
